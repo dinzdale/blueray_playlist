@@ -15,6 +15,7 @@ compose-multiplatform = "1.7.3"
 core = "0.91.0-SNAPSHOT"
 junit = "4.13.2"
 kotlin = "2.1.10"
+kotlin-serialization = "2.1.20"
 kotlinx-coroutines = "1.10.1"
 
 [libraries]
@@ -40,3 +41,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization"}

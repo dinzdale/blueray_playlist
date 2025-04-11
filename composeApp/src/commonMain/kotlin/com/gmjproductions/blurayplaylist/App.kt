@@ -47,5 +47,6 @@ fun App() {
 suspend fun loadPlaylist() : String {
     val byteArray = Res.readBytes("files/m2ts.xspf")
     val result = String(byteArray)
+    val playlists = XML.decodeFromString(Playlists.serializer(),result)
     return result
 }
