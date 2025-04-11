@@ -1,5 +1,7 @@
 package com.gmjproductions.blurayplaylist.models
 
+import kotlinx.serialization.Serializable
+
 // To parse the JSON, install Klaxon and do:
 //
 //   val welcome5 = Welcome5.fromJson(jsonString)
@@ -28,7 +30,9 @@ package com.gmjproductions.blurayplaylist.models
 //        public fun fromJson(json: String) = klaxon.parse<Welcome5>(json)
 //    }
 //}
-
+@Serializable
+data class Playlists(val playlists:List<Playlist>)
+@Serializable
 data class Playlist (
     val title: String,
     val trackList: TrackList,
@@ -43,14 +47,14 @@ data class Playlist (
     //@Json(name = "_version")
     val version: String
 )
-
+@Serializable
 data class PlaylistExtension (
     val item: List<Item>,
 
     //@Json(name = "_application")
     val application: String
 )
-
+@Serializable
 data class Item (
     //@Json(name = "_tid")
     val tid: String,
@@ -58,7 +62,7 @@ data class Item (
     //@Json(name = "__prefix")
     val prefix: Prefix
 )
-
+@Serializable
 enum class Prefix(val value: String) {
     Vlc("vlc");
 
@@ -69,24 +73,24 @@ enum class Prefix(val value: String) {
         }
     }
 }
-
+@Serializable
 data class TrackList (
     val track: List<Track>
 )
-
+@Serializable
 data class Track (
     val location: String,
     val duration: String,
     val extension: TrackExtension
 )
-
+@Serializable
 data class TrackExtension (
     val id: ID,
 
     //@Json(name = "_application")
     val application: String
 )
-
+@Serializable
 data class ID (
     //@Json(name = "__prefix")
     val prefix: Prefix,
