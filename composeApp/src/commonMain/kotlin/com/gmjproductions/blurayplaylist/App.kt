@@ -19,6 +19,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import blurayplaylist.composeapp.generated.resources.Res
 import blurayplaylist.composeapp.generated.resources.compose_multiplatform
 import com.gmjproductions.blurayplaylist.models.Playlists
+import com.gmjproductions.blurayplaylist.models.person
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.io.File
@@ -47,6 +48,13 @@ fun App() {
 suspend fun loadPlaylist() : String {
     val byteArray = Res.readBytes("files/m2ts.xspf")
     val result = String(byteArray)
-    val playlists = XML.decodeFromString(Playlists.serializer(),result)
-    return result
+
+    val o = XML.decodeFromString<person>(simpleTest)
+    return o.toString()
 }
+
+private val simpleTest =
+"<person>"+
+"<firstname>Brunck</firstname>"+
+"<lastname>McGuint</lastname>"+
+"</person>"
