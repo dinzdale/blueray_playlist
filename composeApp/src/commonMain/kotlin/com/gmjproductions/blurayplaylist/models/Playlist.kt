@@ -1,23 +1,28 @@
 package com.gmjproductions.blurayplaylist.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import nl.adaptivity.xmlutil.serialization.XmlElement
+import nl.adaptivity.xmlutil.serialization.XmlSerialName
 
 @Serializable
-data class Playlists(val playlists:List<Playlist>)
-@Serializable
+@SerialName("playlist")
+@XmlSerialName(value = "playlist")
 data class Playlist (
+    @XmlElement
     val title: String,
+    @XmlElement
     val trackList: TrackList,
-    val extension: PlaylistExtension,
-
-    //@Json(name = "_xmlns")
-    val xmlns: String,
-
-    //@Json(name = "_xmlns:vlc")
-    val xmlnsVlc: String,
-
-    //@Json(name = "_version")
-    val version: String
+//    val extension: PlaylistExtension,
+//
+//    //@Json(name = "_xmlns")
+//    val xmlns: String,
+//
+//    //@Json(name = "_xmlns:vlc")
+//    val xmlnsVlc: String,
+//
+//    //@Json(name = "_version")
+//    val version: String
 )
 @Serializable
 data class PlaylistExtension (
@@ -47,13 +52,16 @@ enum class Prefix(val value: String) {
 }
 @Serializable
 data class TrackList (
+    @XmlElement
     val track: List<Track>
 )
 @Serializable
 data class Track (
+    @XmlElement
     val location: String,
+    @XmlElement
     val duration: String,
-    val extension: TrackExtension
+    //val extension: TrackExtension
 )
 @Serializable
 data class TrackExtension (

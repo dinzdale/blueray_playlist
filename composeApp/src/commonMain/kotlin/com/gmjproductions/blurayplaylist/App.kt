@@ -1,31 +1,22 @@
 package com.gmjproductions.blurayplaylist
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-import org.jetbrains.compose.ui.tooling.preview.Preview
-
 import blurayplaylist.composeapp.generated.resources.Res
-import blurayplaylist.composeapp.generated.resources.compose_multiplatform
-import com.gmjproductions.blurayplaylist.models.Playlists
-import com.gmjproductions.blurayplaylist.models.person
+import com.gmjproductions.blurayplaylist.models.Playlist
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import java.io.File
-import java.nio.file.DirectoryStream
-import java.nio.file.FileSystem
-import java.nio.file.Files
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
@@ -46,10 +37,10 @@ fun App() {
 
 @OptIn(ExperimentalResourceApi::class)
 suspend fun loadPlaylist() : String {
-    val byteArray = Res.readBytes("files/m2ts.xspf")
+    val byteArray = Res.readBytes("files/m2ts_tmp.xspf")
     val result = String(byteArray)
 
-    val o = XML.decodeFromString<person>(simpleTest)
+    val o = XML.decodeFromString<Playlist>(result)
     return o.toString()
 }
 

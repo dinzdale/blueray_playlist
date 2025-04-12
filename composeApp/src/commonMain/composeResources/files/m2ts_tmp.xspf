@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist>
+	<title>Playlist</title>
+	<trackList>
+	<track>
+			<location>file:///home/samba_share/MeTV%20Toons/Huck/Huck%20-%20Birdhouse%20Blues.mp4</location>
+			<duration>435776</duration>
+		</track>
+	</tracklist>
+</playlist>
