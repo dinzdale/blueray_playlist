@@ -11,8 +11,8 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 data class Playlist (
     @XmlElement
     val title: String,
-    @XmlElement
-    val trackList: TrackList,
+    @XmlSerialName(value = "trackList")
+    val trackList: TrackList
 //    val extension: PlaylistExtension,
 //
 //    //@Json(name = "_xmlns")
@@ -51,11 +51,15 @@ enum class Prefix(val value: String) {
     }
 }
 @Serializable
+@SerialName("tracklist")
+@XmlSerialName(value = "tracklist")
 data class TrackList (
     @XmlElement
     val track: List<Track>
 )
 @Serializable
+@SerialName("track")
+@XmlSerialName(value = "track")
 data class Track (
     @XmlElement
     val location: String,
