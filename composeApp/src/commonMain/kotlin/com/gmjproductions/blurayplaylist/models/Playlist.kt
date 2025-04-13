@@ -51,14 +51,12 @@ enum class Prefix(val value: String) {
     }
 }
 @Serializable
-@SerialName("tracklist")
 @XmlSerialName(value = "tracklist")
 data class TrackList (
     @XmlElement
     val track: List<Track>
 )
 @Serializable
-@SerialName("track")
 @XmlSerialName(value = "track")
 data class Track (
     @XmlElement
