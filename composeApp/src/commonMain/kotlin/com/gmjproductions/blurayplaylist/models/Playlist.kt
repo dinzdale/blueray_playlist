@@ -3,6 +3,7 @@ package com.gmjproductions.blurayplaylist.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlBefore
+import nl.adaptivity.xmlutil.serialization.XmlChildrenName
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 
@@ -11,9 +12,9 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 data class Playlist (
     @XmlElement
     val title: String,
-    @XmlSerialName(value = "trackList")
+    @XmlElement
     val trackList: TrackList,
-    @XmlSerialName(value = "extension")
+    @XmlElement
     val extension: PlaylistExtension,
 //
 //    //@Json(name = "_xmlns")
@@ -28,28 +29,24 @@ data class Playlist (
 @Serializable
 @XmlSerialName(value = "extension")
 data class PlaylistExtension (
+    @XmlSerialName("application")
+    val application: String,
+
     @XmlElement
     val item: List<Item>,
 
     //@Json(name = "_application")
-    @XmlSerialName
-    val application: String
+
 )
 @Serializable
-@XmlSerialName("item", prefix = "vlc")
-data class Item (
-    //@Json(name = "_tid")
-    @XmlSerialName
+@XmlSerialName(value = "item", namespace = "http://www.videolan.org/vlc/playlist/ns/0/", prefix = "vlc")
+data class Item(
+    @XmlElement
     val tid: String,
-
-//    //@Json(name = "__prefix")
-//    @XmlElement
-//    val prefix: Prefix
 )
 
-
 @Serializable
-@XmlSerialName(value = "tracklist")
+@XmlSerialName("trackList")
 data class TrackList (
     @XmlElement
     val track: List<Track>
