@@ -21,27 +21,13 @@ data class Playlist (
     val trackList: TrackList,
     @XmlElement
     val extension: PlaylistExtension,
-//
-//    //@Json(name = "_xmlns")
-//    val xmlns: String,
-//
-//    //@Json(name = "_xmlns:vlc")
-//    val xmlnsVlc: String,
-//
-//    //@Json(name = "_version")
-//    val version: String
 )
 @Serializable
 @XmlSerialName(value = "extension")
 data class PlaylistExtension (
     @XmlSerialName("application")
     val application: String,
-
-    @XmlElement
-    val item: List<Item>,
-
-    //@Json(name = "_application")
-
+    val item: List<Item>
 )
 @Serializable
 @XmlSerialName(value = "item", namespace = ns2, prefix = "vlc")
@@ -52,7 +38,6 @@ data class Item(
 @Serializable
 @XmlSerialName("trackList")
 data class TrackList (
-    @XmlElement
     val track: List<Track>
 )
 @Serializable
