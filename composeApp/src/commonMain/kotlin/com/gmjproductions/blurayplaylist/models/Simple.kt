@@ -7,7 +7,7 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 
 @Serializable
 @SerialName("person")
-@XmlSerialName(value = "person")
+@XmlSerialName(value = "person", ns2,"")
 class person(
     @XmlElement val firstname: String,
     @XmlElement val lastname: String

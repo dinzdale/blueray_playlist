@@ -6,10 +6,15 @@ import nl.adaptivity.xmlutil.serialization.XmlBefore
 import nl.adaptivity.xmlutil.serialization.XmlChildrenName
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import nl.adaptivity.xmlutil.serialization.XmlValue
+
+const val ns1="http://xspf.org/ns/0/"
+const val ns2="http://www.videolan.org/vlc/playlist/ns/0/"
 
 @Serializable
-@XmlSerialName(value = "playlist")
+@XmlSerialName(value = "playlist", namespace = ns1)
 data class Playlist (
+    val version:String,
     @XmlElement
     val title: String,
     @XmlElement
@@ -58,14 +63,14 @@ data class Track (
     val location: String,
     @XmlElement
     val duration: String,
-    //val extension: TrackExtension
+    val extension: TrackExtension
+)
+@Serializable
+@XmlSerialName("extension")
+data class TrackExtension (
+    @XmlSerialName("application")
+    val application: String,
+    @XmlSerialName("id",ns2,"vlc")
+    val id : String
 )
 
-//@Serializable
-//data class ID (
-//    //@Json(name = "__prefix")
-//    val prefix: Prefix,
-//
-//    //@Json(name = "__text")
-//    val text: String
-//)

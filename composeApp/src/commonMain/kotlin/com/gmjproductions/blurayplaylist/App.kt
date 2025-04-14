@@ -37,7 +37,7 @@ fun App() {
 
 @OptIn(ExperimentalResourceApi::class)
 suspend fun loadPlaylist() : String {
-    val byteArray = Res.readBytes("files/m2ts_tmp.xspf")
+    val byteArray = Res.readBytes("files/m2ts_2.xspf")
     val result = String(byteArray)
 
     val o = XML.decodeFromString<Playlist>(result)
