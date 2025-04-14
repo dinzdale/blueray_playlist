@@ -44,9 +44,8 @@ data class PlaylistExtension (
 
 )
 @Serializable
-@XmlSerialName(value = "item", namespace = "http://www.videolan.org/vlc/playlist/ns/0/", prefix = "vlc")
+@XmlSerialName(value = "item", namespace = ns2, prefix = "vlc")
 data class Item(
-    @XmlElement
     val tid: String,
 )
 
@@ -68,9 +67,14 @@ data class Track (
 @Serializable
 @XmlSerialName("extension")
 data class TrackExtension (
-    @XmlSerialName("application")
     val application: String,
-    @XmlSerialName("id",ns2,"vlc")
+    val id : ID
+)
+
+@Serializable
+@XmlSerialName("id",ns2)
+data class ID(
+    @XmlValue
     val id : String
 )
 
