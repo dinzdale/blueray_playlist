@@ -28,4 +28,13 @@ class BluRayPlaylist {
 
     private fun getHeader() = "MPLS"
     private fun getVersionNumber() = "0200"
+
+    private fun PlayList() {
+        // $00-$03 - 4 bytes Length of play list section, not including this
+        // $04-$05 - 2 bytes - Reserved = 0
+        // $06-$07 - 2 bytes - Number of play items
+        // $08-$09 - 2 bytes - Number of sub paths
+        // $0A - Play Item Entries
+        // $?? - Subpath entries
+    }
 }
