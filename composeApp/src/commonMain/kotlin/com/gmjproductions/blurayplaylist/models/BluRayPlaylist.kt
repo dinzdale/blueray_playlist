@@ -86,4 +86,55 @@ class BluRayPlaylist {
         //   STNTTABLE
     }
 
+    private fun ClipInformationFile() {
+        // Type indicator                   4 bytes
+        // Version Number                   4 bytes
+        // sequence info start              8 bytes
+        // program info start address       8 bytes
+        // cpi start address                8 bytes
+        // clipmark start address           8 bytes
+        // extension start address == 0     8
+        // RESERVED                         96 bits - 12 bytes
+        // CLIPINFO
+        // starting byte SequenceInfo
+        // starting byte ProgramInfo
+        // starting byte CPI
+        // starting byte ClipMarkStart address
+        // CLIPMARK
+        // starting byte Extension Data address
+        // extension start address
+        // if (extension start address != 0):
+        //    ExtensionData
+    }
+    private fun ClipInfo() {
+        // length                            4 bytes
+        // RESERVED                          2 bytes
+        // ClipStream type                   1 byte
+        // Application type                  1 byte
+        // RESERVED                          31 bits = 3 bytes, 7 bits
+        // isCC5 or isAtCDelta               1 bit
+        // TSTypeInfoBlock                   256 bits = 32 bytes
+        // if (isCC5 == 1) :
+        //   RESERVED                        1 byte
+        //   FollowingClipStreamType         1 byte
+        //   RESERVED                        4 bytes
+        //   FollowingClipInformationName    5 bytes
+        //   FollowingClipCodeIdentifier     4 bytes
+        //   RESERVED                        1 byte
+        // endif
+    }
+    private fun SequenceInfo() {
+        // length                             4 bytes
+        // RESERVED                           1 byte
+        // number of atc sequences            1 byte
+        // for each atc sequences:
+        //    SPNATCStart                     4 bytes
+        //    number of stc sequences         1 byte
+        //    offset stc id                   1 byte
+        //    for each stc sequences:
+        //
+        //    endif
+        // end
+    }
+
 }
