@@ -59,14 +59,15 @@ class BluRayPlaylist {
     }
     private fun PlayItem() {
         // length                     2 bytes
-        // ClipInformationFileName    5 bytes = '0'..'9' only ? ascii
+        // ClipInformationFileName    5 bytes = '0'..'9' ie: 00000 or 00009
         // ClipCodecIdentifier        4 Bytes = "M2TS" or "MP4" ? ascii
         // RESERVED                   11 Bits - 1.5 Bytes
         // is multi angle             1 bit
         // connection condition       4 Bits
         // Ref To STCID               1 byte
-        // In time                    4 bytes
-        // Out time                   4 bytes
+        // In time                    4 bytes Clip Start Time/relative to prev clip
+        // Out time                   4 bytes Clip End Time/relative to prev clip
+       // ---- Times are expressed in 45 KHz, so you'll need to divide by 45000 to get them in seconds.
         // UOMaskTable
         // Play item random access flag    1 bit
         // RESERVED                        7 bits
@@ -135,6 +136,45 @@ class BluRayPlaylist {
         //
         //    endif
         // end
+    }
+
+    private fun ProgramInfo() {
+        // length                              4 bytes
+        // RESERVED                            1 byte
+        // number of programs                  1 byte
+        // for 1...number of programs
+        //     SPNProgramSequenceStart          4 bytes
+        //     ProgramMapPID                    2 bytes
+        //     NumberOfStreamsInPS              1 byte
+        //     reserved (may be NumberOfGroups) 1 byte
+        //     for NumberOfStreamsInPS
+        //        StreamPID                      2 bytes
+        //     end
+        //     StreamConfigInfo
+        // end
+    }
+    private fun StreamConfigInfo() {
+        // Length                                8 bytes
+        // StreamCodingType  01, 02, 1B, EA
+        // if StreamCodingType =  0x01 | 0x02 | 0x1B | 0xEA
+        //    VideoFormat                           4 bits
+        //    FrameRate                             4 bits
+        //    VideoAspect                           4 bits
+        //    RESERVED                              2 bits
+        //    OCFlag                                1 bit
+        //    RESERVED                              17 bits
+        //  else if StreamCodingType =  0x024
+        //    VideoFormat                           4 bits
+        //    FrameRate                             4 bits
+        //    VideoAspect                           4 bits
+        //    RESERVED                              2 bits
+        //    OCFlag                                1 bit
+        //    CRFlag                                1 bit
+        //    DynamicRange                          4 bits
+        //    ColorSpace                            4 bits
+        //    HDRPlusFlag                           1 bit
+        //    RESERVED                              7 bits
+        //  else if
     }
 
 }
