@@ -174,7 +174,17 @@ class BluRayPlaylist {
         //    ColorSpace                            4 bits
         //    HDRPlusFlag                           1 bit
         //    RESERVED                              7 bits
-        //  else if
+        //  StreamCodingType in {0x03, 0x04, 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0xA1, 0xA2}
+        //      AudioFormat                          4 bits
+        //      SampleRate                           4 bits
+        //      Language                             3 bytes
+        //      if StreamCodingType = {0x90, 0x91}:
+        //         Language                          3 bytes
+        //      else if  StreamCodingType =  {0x92}:
+        //         CharCode                          1 bytes
+        //         Language                          3 bytes
+        //      end if
+        // end
     }
 
 }
