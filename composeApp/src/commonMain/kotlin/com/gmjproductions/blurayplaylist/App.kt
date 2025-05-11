@@ -36,7 +36,7 @@ fun App() {
 }
 
 @OptIn(ExperimentalResourceApi::class)
-suspend fun loadPlaylist() : String {
+suspend fun loadPlaylist() : Stringhttps://app.codeconvert.ai/code-converter?inputLang=Vala&outputLang=Kotlin {
     val byteArray = Res.readBytes("files/m2ts.xspf")
     val result = String(byteArray)
 
