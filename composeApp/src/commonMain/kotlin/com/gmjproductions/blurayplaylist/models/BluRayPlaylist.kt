@@ -7,7 +7,7 @@ class BluRayPlaylist {
         byteOS.writeBytes(getHeader().toByteArray())
         // $00-$03 (Header) 4 bytes = "MPLS"
         // $04-$07 (Version Number) 4 bytes = "0200"
-        // $08-$0B (Playlist Start Address)      4 Bytes/Word boundary - offset to Playlist section (from beginning of file)
+        // $08-$0B AppInfoPlayList (Playlist Start Address)      4 Bytes/Word boundary - offset to Playlist section (from beginning of file)
         // $0C-$0F (Playlist Mark Start Address) 4 Bytes - offset to PMSA from beginning of file
         // $10-$13 (Extension Data Section)      4 Bytes - not included: $00000000
         // $14-$27 (Unused)                     20 Bytes = 00 00 00 00 00 00 00
@@ -34,8 +34,12 @@ class BluRayPlaylist {
     private fun getHeader() = "MPLS"
     private fun getVersionNumber() = "0200"
 
+    private fun AppInfoPlayList() {
+        // PlaybackType     1 byte
+        // PlaybackCount
+    }
     private fun ApplicationPlayList() {
-        // Length              4 Bytes
+        // Length              U 4 Bytes
         // RESERVED            1 Byte
         // PLAYBACK TYPE       1 Byte =1 or 2 or 3
         // RESERVED OR PB CNT  2 Bytes
@@ -47,7 +51,7 @@ class BluRayPlaylist {
 
     private fun UOMaskTable()  {
         // 8 Bytes - default? = 00 04 01 0f 40 00 00 00 00
-        // every bit set, prohibits user
+        // every bit set, prohibits userAppInfoBDMV
     }
 
     private fun PlayList() {
