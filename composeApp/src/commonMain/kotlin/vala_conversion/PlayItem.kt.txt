@@ -1,0 +1,90 @@
+/*
+ * BluRay - a simple sample implementation of Blu-ray Disc specifications
+ * Copyright (C) 2011  Luca Wehrstedt
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package BluRay
+
+import java.io.IOException
+
+class PlayItem {
+    var ClipInformationFileName: String = ""
+    var ClipCodecIdentifier: String = ""
+    var IsMultiAngle: UByte = 0u
+    var ConnectionCondition: UByte = 0u
+    var RefToSTCID: UByte = 0u
+    var INTime: UInt = 0u
+    var OUTTime: UInt = 0u
+    var UOMaskTable: UOMaskTable? = null
+    var PlayItemRandomAccessFlag: UByte = 0u
+    var StillMode: UByte = 0u
+    var StillTime: UShort = 0u
+    var STNTable: STNTable? = null
+
+    companion object {
+        @Throws(ParseError::class)
+        fun fromBitInputStream(inputStream: BitInputStream): PlayItem {
+            try {
+                val playItem = PlayItem()
+                
+                val length = inputStream.readBitsAsUInt16(16)
+                val position = inputStream.tell() // Needed to seek
+
+                playItem.ClipInformationFileName = inputStream.readString(5)
+                playItem.ClipCodecIdentifier = inputStream.readString(4)
+
+                inputStream.skipBits(11)
+
+                playItem.IsMultiAngle = inputStream.readBitsAsUInt8(1)
+                playItem.ConnectionCondition = inputStream.readBitsAsUInt8(4)
+                playItem.RefToSTCID = inputStream.readBitsAsUInt8(8)
+                playItem.INTime = inputStream.readBitsAsUInt32(32)
+                playItem.OUTTime = inputStream.readBitsAsUInt32(32)
+
+                // UOMaskTable
+                playItem.UOMaskTable = UOMaskTable.fromBitInputStream(inputStream)
+
+                playItem.PlayItemRandomAccessFlag = inputStream.readBitsAsUInt8(1)
+
+                inputStream.skipBits(7)
+
+                playItem.StillMode = inputStream.readBitsAsUInt8(8)
+
+                if (playItem.StillMode == 0x01u.toUByte()) {
+                    playItem.StillTime = inputStream.readBitsAsUInt16(16)
+                } else {
+                    inputStream.skipBits(16)
+                }
+
+                // TODO: MultiAngle
+
+                // STNTable
+                playItem.STNTable = STNTable.fromBitInputStream(inputStream)
+
+                inputStream.seek(position + length)
+                
+                return playItem
+            } catch (e: ParseError) {
+                throw e
+            } catch (e: IOException) {
+                throw ParseError.INPUT_ERROR("Couldn't parse PlayItem.")
+            }
+        }
+    }
+
+//    fun write(outputStream: BitOutputStream) {
+//    }
+}
