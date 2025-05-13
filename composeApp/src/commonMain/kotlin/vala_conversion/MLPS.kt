@@ -7,7 +7,7 @@ import java.io.IOException
 // Placeholder for custom ParseError exception
 open class ParseError(message: String? = null, cause: Throwable? = null) : Exception(message, cause) {
     // Placeholder for nested INPUT_ERROR
-    class INPUT_ERROR(message: String? = null, cause: Throwable? = null) : ParseError(message, cause)
+    class INPUT_ERROR(message: String? = null, cause: Throwable? = null) : `ParseError.kt`(message, cause)
 }
 
 // Placeholder for custom BitInputStream class
@@ -90,19 +90,19 @@ class MPLS {
 
     var extensionData: ExtensionData? = null
 
-    @Throws(ParseError::class)
+    @Throws(`ParseError.kt`::class)
     constructor(inputStream: FileInputStream) {
         try {
             // Vala's `new Class.method` constructor syntax translates to
             // calling another constructor using `this(...)` in Kotlin.
             // We need to create the BitInputStream instance here.
             this(BitInputStream(inputStream))
-        } catch (e: ParseError) {
+        } catch (e: `ParseError.kt`) {
             throw e
         }
     }
 
-    @Throws(ParseError::class)
+    @Throws(`ParseError.kt`::class)
     constructor(inputStream: BitInputStream) {
         try {
             typeIndicator = inputStream.read_string(4)
@@ -135,12 +135,12 @@ class MPLS {
                 // ExtensionData
                 extensionData = ExtensionData(inputStream)
             }
-        } catch (e: ParseError) {
+        } catch (e: `ParseError.kt`) {
             // Re-throw ParseError directly
             throw e
         } catch (e: IOException) {
             // Catch IOException and wrap it in a ParseError.INPUT_ERROR
-            throw ParseError.INPUT_ERROR("Couldn't parse MPLS.", e)
+            throw `ParseError.kt`.INPUT_ERROR("Couldn't parse MPLS.", e)
         }
     }
 

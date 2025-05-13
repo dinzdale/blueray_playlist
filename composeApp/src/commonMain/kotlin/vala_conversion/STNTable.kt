@@ -73,7 +73,7 @@ class STNTable
     var SecondaryPGStreamEntry: ArrayList<StreamEntry>
     var SecondaryPGStreamAttributes: ArrayList<StreamAttributes>
 
-    @Throws(ParseError::class)
+    @Throws(`ParseError.kt`::class)
     constructor (input_stream: BitInputStream)
     {
         try
@@ -180,13 +180,13 @@ class STNTable
 
             input_stream.seek (Position + Length.toLong())
         }
-        catch (e: ParseError)
+        catch (e: `ParseError.kt`)
         {
             throw e
         }
         catch (e: IOError)
         {
-            throw ParseError ("Couldn't parse STNTable.")
+            throw `ParseError.kt` ("Couldn't parse STNTable.")
         }
     }
 

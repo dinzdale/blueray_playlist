@@ -99,7 +99,7 @@ class UOMaskTable { // In Kotlin, inheriting from Any (equivalent to Vala Object
     // Constructor translated from Vala
     // Vala: UOMaskTable.from_bit_input_stream (BitInputStream input_stream) throws ParseError
     // Kotlin: constructor(inputStream: BitInputStream) throws ParseError
-    @Throws(ParseError::class) // Explicitly declare that this constructor can throw ParseError
+    @Throws(`ParseError.kt`::class) // Explicitly declare that this constructor can throw ParseError
     constructor (inputStream: BitInputStream) {
         try {
             // Read 1 bit for each property
@@ -156,7 +156,7 @@ class UOMaskTable { // In Kotlin, inheriting from Any (equivalent to Vala Object
             // Throw a new ParseError with a specific message
             // Vala: throw new ParseError.INPUT_ERROR ("Couldn't parse UOMaskTable.");
             // Kotlin: throw ParseError("Couldn't parse UOMaskTable.")
-            throw ParseError("Couldn't parse UOMaskTable.")
+            throw `ParseError.kt`("Couldn't parse UOMaskTable.")
         }
     }
 

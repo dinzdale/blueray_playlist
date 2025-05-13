@@ -47,19 +47,19 @@ class UOMaskTable {
     }
 }
 
-// Custom exception for parsing errors
-// This is a placeholder and needs a real implementation if more complex error types are needed
-class ParseError(message: String, cause: Throwable? = null) : Exception(message, cause) {
-    // Vala's ParseError.INPUT_ERROR suggests a specific type.
-    // We represent this using a companion object factory method.
-    companion object {
-        fun INPUT_ERROR(message: String): ParseError {
-            return ParseError(message)
-        }
-        // If the original Vala ParseError had different constructors or properties,
-        // this would need to be adjusted. Based on the usage, a simple message is enough.
-    }
-}
+//// Custom exception for parsing errors
+//// This is a placeholder and needs a real implementation if more complex error types are needed
+//class ParseError(message: String, cause: Throwable? = null) : Exception(message, cause) {
+//    // Vala's ParseError.INPUT_ERROR suggests a specific type.
+//    // We represent this using a companion object factory method.
+//    companion object {
+//        fun INPUT_ERROR(message: String): ParseError {
+//            return ParseError(message)
+//        }
+//        // If the original Vala ParseError had different constructors or properties,
+//        // this would need to be adjusted. Based on the usage, a simple message is enough.
+//    }
+//}
 
 // Minimal definition for BitOutputStream based on commented out method
 // This is a placeholder and needs a real implementation

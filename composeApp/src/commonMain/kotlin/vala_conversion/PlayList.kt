@@ -16,7 +16,7 @@ class PlayItem {
     var stillTime: UShort = 0u
     var stnTable: STNTable? = null
 
-    @Throws(ParseError::class)
+    @Throws(`ParseError.kt`::class)
     constructor(inputStream: BitInputStream) {
         try {
             val length: UShort = inputStream.readBitsAsUInt16(16)
@@ -54,10 +54,10 @@ class PlayItem {
             stnTable = STNTable.fromBitInputStream(inputStream)
 
             inputStream.seek(position + length.toLong())
-        } catch (e: ParseError) {
+        } catch (e: `ParseError.kt`) {
             throw e
         } catch (e: IOException) {
-            throw ParseError.InputError("Couldn't parse PlayItem.")
+            throw `ParseError.kt`.InputError("Couldn't parse PlayItem.")
         }
     }
 

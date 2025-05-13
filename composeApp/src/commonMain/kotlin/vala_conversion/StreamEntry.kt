@@ -26,7 +26,7 @@ import kotlin.experimental.ExperimentalUnsignedTypes
 // Custom exception for parsing errors, mapping Vala's ParseError
 sealed class ParseError(message: String, cause: Throwable? = null) : Exception(message, cause) {
     // Represents an error during input processing, mapping Vala's ParseError.INPUT_ERROR
-    class InputError(message: String, cause: Throwable? = null) : ParseError(message, cause)
+    class InputError(message: String, cause: Throwable? = null) : `ParseError.kt`(message, cause)
     // Add other specific error types if needed based on Vala's ParseError definition
 }
 
@@ -94,7 +94,7 @@ class StreamEntry { // In Kotlin, classes implicitly inherit from Any (similar t
 
         } catch (e: IOException) { // Catch IOError, which is mapped to java.io.IOException
             // Throw a new ParseError.InputError, wrapping the original IOException
-            throw ParseError.InputError("Couldn't parse StreamEntry.", e)
+            throw `ParseError.kt`.InputError("Couldn't parse StreamEntry.", e)
         }
     }
 
