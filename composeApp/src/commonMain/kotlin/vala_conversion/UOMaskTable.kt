@@ -20,42 +20,6 @@ package BluRay
 
 import java.io.IOException // Needed for catching IOError equivalent
 
-// Placeholder for BitInputStream - MUST be provided for the code to compile
-// In a real scenario, this would be an actual implementation reading from a stream
-class BitInputStream {
-    // Mock implementation - replace with actual logic
-    // This method simulates reading a specified number of bits and returning them as a Byte.
-    // In the context of UOMaskTable, it's used to read single bits (0 or 1).
-    fun readBitsAsUint8(bits: Int): Byte {
-        // Simulate reading from a stream. This mock returns 0.
-        // A real implementation would read from an underlying data source.
-        if (bits != 1) {
-             // The original code only reads 1 bit at a time, but a real implementation
-             // might handle other bit counts. For this translation, we only need 1.
-        }
-        // In a real scenario, this might throw IOException if the stream ends prematurely.
-        println("Mock: Reading $bits bits from stream...")
-        return 0 // Placeholder value (0 or 1 would be expected in real data)
-    }
-
-    // Mock implementation - replace with actual logic
-    // This method simulates skipping a specified number of bits in the stream.
-    fun skipBits(bits: Int) {
-        // Simulate advancing the stream position.
-        // In a real scenario, this might throw IOException if the stream ends prematurely.
-        println("Mock: Skipping $bits bits in stream...")
-    }
-}
-
-// Placeholder for ParseError - MUST be provided for the code to compile
-// In a real scenario, this would be an actual exception class representing parsing errors.
-class ParseError(message: String) : Exception(message) {
-    // The Vala syntax `new ParseError.INPUT_ERROR(...)` suggests a constructor or
-    // static factory method named INPUT_ERROR. The simplest translation that fits
-    // the usage is a standard constructor.
-}
-
-
 class UOMaskTable { // In Kotlin, inheriting from Any (equivalent to Vala Object) is implicit
 
     // Properties translated from Vala uint8 to Kotlin Byte
@@ -99,7 +63,7 @@ class UOMaskTable { // In Kotlin, inheriting from Any (equivalent to Vala Object
     // Constructor translated from Vala
     // Vala: UOMaskTable.from_bit_input_stream (BitInputStream input_stream) throws ParseError
     // Kotlin: constructor(inputStream: BitInputStream) throws ParseError
-    @Throws(`ParseError.kt`::class) // Explicitly declare that this constructor can throw ParseError
+    @Throws(ParseError::class) // Explicitly declare that this constructor can throw ParseError
     constructor (inputStream: BitInputStream) {
         try {
             // Read 1 bit for each property
@@ -156,7 +120,7 @@ class UOMaskTable { // In Kotlin, inheriting from Any (equivalent to Vala Object
             // Throw a new ParseError with a specific message
             // Vala: throw new ParseError.INPUT_ERROR ("Couldn't parse UOMaskTable.");
             // Kotlin: throw ParseError("Couldn't parse UOMaskTable.")
-            throw `ParseError.kt`("Couldn't parse UOMaskTable.")
+            throw ParseError("Couldn't parse UOMaskTable.")
         }
     }
 

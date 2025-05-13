@@ -27,7 +27,7 @@ import java.lang.Exception
 /**
  * Base exception for parsing errors in the BluRay domain.
  */
-class ParseError(message: String? = null, cause: Throwable? = null) : Exception(message, cause) {
+sealed class ParseError(message: String? = null, cause: Throwable? = null) : Exception(message, cause) {
 
     /**
      * Represents an error related to invalid input data.
