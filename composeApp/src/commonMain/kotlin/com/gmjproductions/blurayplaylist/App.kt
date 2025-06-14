@@ -17,31 +17,21 @@ import com.gmjproductions.blurayplaylist.models.Playlist
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.xml.sax.XMLReader
+import java.io.StringReader
+import javax.xml.stream.XMLInputFactory
+import javax.xml.stream.XMLStreamReader
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        var xspfContents by remember { mutableStateOf<String?>(null) }
-        LaunchedEffect(Unit) {
-            xspfContents = loadPlaylist()
-        }
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-           xspfContents?.also {
-               Text("playlist: $xspfContents")
-           }
-        }
-    }
+
 }
 
-@OptIn(ExperimentalResourceApi::class)
-suspend fun loadPlaylist() : Stringhttps://app.codeconvert.ai/code-converter?inputLang=Vala&outputLang=Kotlin {
-    val byteArray = Res.readBytes("files/m2ts.xspf")
-    val result = String(byteArray)
+fun loadProjectDefault() {
+    XMLInputFactory.newDefaultFactory()
 
-    val o = XML.decodeFromString<Playlist>(result)
-    return o.toString()
+
 }
 
 private val simpleTest =

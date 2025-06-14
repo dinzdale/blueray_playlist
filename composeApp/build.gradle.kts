@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.xmlutilcore)
             implementation(libs.xmlutilserialization)
+            implementation(libs.mpfilepicker)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
