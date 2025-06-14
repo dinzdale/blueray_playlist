@@ -3,9 +3,12 @@ package com.gmjproductions.blurayplaylist
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.Button
@@ -48,7 +51,7 @@ fun MainScreen() {
 
 @Composable
 fun SelectInputFile(showFilePicker: Boolean, onFileSelected: (String?) -> Unit) {
-    FilePicker(showFilePicker, fileExtensions = listOf("*")) {
+    FilePicker(showFilePicker, fileExtensions = listOf("mpf")) {
         onFileSelected(it?.path)
     }
 }
@@ -56,14 +59,15 @@ fun SelectInputFile(showFilePicker: Boolean, onFileSelected: (String?) -> Unit) 
 @Composable
 fun Header(filePath: String, onOpenFileClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().height(200.dp).background(color = Color.Yellow),
+        Modifier.fillMaxWidth().height(100.dp).padding(start = 10.dp).background(color = Color.Yellow),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.Start
     ) {
 
         Button(onClick = onOpenFileClick) {
             Text("Open File")
         }
+        Spacer(Modifier.width(10.dp))
         Text(filePath)
 
     }
