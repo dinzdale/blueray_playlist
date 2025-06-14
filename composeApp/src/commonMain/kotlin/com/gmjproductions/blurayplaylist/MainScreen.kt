@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,21 +31,25 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun MainScreen() {
     MaterialTheme {
         Surface(Modifier.fillMaxSize()) {
-            val inputFile by remember { mutableStateOf("dummy file path") }
-            val showFilePicker by remember { mutableStateOf(false) }
+            var inputFile by remember { mutableStateOf("dummy file path") }
+            var showFilePicker by remember { mutableStateOf(false) }
             Row(Modifier.fillMaxSize()) {
                 Header(inputFile) {
-
+                    showFilePicker = true
                 }
+            }
+            SelectInputFile(showFilePicker) {
+                showFilePicker = false
+                inputFile = it ?: ""
             }
         }
     }
 }
 
 @Composable
-fun SelectInputFile(showFilePicker: Boolean, onFileSelected: (String) -> Unit) {
+fun SelectInputFile(showFilePicker: Boolean, onFileSelected: (String?) -> Unit) {
     FilePicker(showFilePicker, fileExtensions = listOf("*")) {
-
+        onFileSelected(it?.path)
     }
 }
 

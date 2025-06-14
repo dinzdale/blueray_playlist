@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamReader
 @Composable
 @Preview
 fun App() {
-
+    MainScreen()
 }
 
 fun loadProjectDefault() {
@@ -35,7 +35,7 @@ fun loadProjectDefault() {
 }
 
 private val simpleTest =
-"<person>"+
-"<firstname>Brunck</firstname>"+
-"<lastname>McGuint</lastname>"+
-"</person>"
+    "<person>" +
+            "<firstname>Brunck</firstname>" +
+            "<lastname>McGuint</lastname>" +
+            "</person>"
