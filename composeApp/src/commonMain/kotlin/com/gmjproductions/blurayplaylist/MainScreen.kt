@@ -107,7 +107,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit) {
 fun ShowResults(calcit: Calcit?) {
     calcit?.llist?.itemList?.also {
         val lazyListState = rememberLazyListState()
-        LazyColumn {
+        LazyColumn(state = lazyListState) {
             items(it) { nxtItem ->
                 Row(Modifier.fillMaxWidth().wrapContentHeight()) {
                     Text("${nxtItem.ID}: ${nxtItem.value}")
