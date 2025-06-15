@@ -7,15 +7,17 @@ import nl.adaptivity.xmlutil.serialization.XmlValue
 
 @Serializable
 @XmlSerialName(value = "CALCIT")
+@XmlElement
 class Calcit() {
-    @XmlElement
+    @XmlValue
     val llist : LList? = null
 }
 
 @Serializable
 @XmlSerialName(value = "L")
 class LList() {
-    val itemList : ArrayList<MultiAVCHDItem>? = null
+
+    val itemList : List<MultiAVCHDItem> = listOf()
 }
 
 @Serializable
