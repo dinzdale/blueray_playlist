@@ -59,7 +59,6 @@ fun MainScreen() {
             }
             LaunchedEffect(inputFile) {
                 inputFile?.also {
-
                     System.out.println("Before Parse")
                     inputSettings = ParseInputFile(it)
                     System.out.println("After Parse")
@@ -81,9 +80,16 @@ fun SelectInputFile(showFilePicker: Boolean, onFileSelected: (String?) -> Unit) 
 
 fun ParseInputFile(filePath: String?) = filePath?.let {
     val fileReader = FileReader(filePath)
-    val contents = BufferedReader(fileReader).readText()
+    var contents = BufferedReader(fileReader).readText()
+    contents = cleanupFileContents(contents)
     XML.decodeFromString<Calcit>(contents)
+}
 
+fun cleanupFileContents(contents:String) : String {
+    val date="<.*DATE.*F>".toRegex()
+    val stringToRemove = date.find(contents)?.value
+    val cleanedContents = contents.replace(date,"")
+    return cleanedContents
 }
 
 @Composable
@@ -107,7 +113,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit) {
 fun ShowResults(calcit: Calcit?) {
     calcit?.llist?.itemList?.also {
         val lazyListState = rememberLazyListState()
-        LazyColumn(state = lazyListState) {
+        LazyColumn(state = lazyListState, userScrollEnabled = true) {
             items(it) { nxtItem ->
                 Row(Modifier.fillMaxWidth().wrapContentHeight()) {
                     Text("${nxtItem.ID}: ${nxtItem.value}")
