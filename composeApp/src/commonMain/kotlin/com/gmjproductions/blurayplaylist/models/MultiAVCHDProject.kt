@@ -10,25 +10,26 @@ import nl.adaptivity.xmlutil.serialization.XmlValue
 @XmlElement
 class Calcit() {
     @XmlValue
-    val llist : LList? = null
+    val llist: LList? = null
 }
 
 @Serializable
 @XmlSerialName(value = "L")
 class LList() {
 
-    val itemList : List<MultiAVCHDItem> = listOf()
+    val itemList: List<MultiAVCHDItem> = listOf()
+
 }
 
 @Serializable
 @XmlSerialName(value = "F")
 class MultiAVCHDItem() {
-    val ID : String = ""
+    @XmlElement
+    val ID: String = ""
+
     @XmlValue
-    val value : String = ""
+    val value: String? = null
 }
 
-@Serializable
-@XmlSerialName(value = "E")
-class E() {}
+
 
