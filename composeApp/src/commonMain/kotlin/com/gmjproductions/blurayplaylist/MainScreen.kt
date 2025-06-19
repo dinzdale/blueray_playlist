@@ -88,9 +88,13 @@ fun ParseInputFile(filePath: String?) = filePath?.let {
 fun cleanupFileContents(contents:String) : String {
     val date="<.*DATE.*F>".toRegex()
     val e="(<E/>)+".toRegex()
+    val l= "(<L>.*</L>)+".toRegex()
     val stringToRemove = date.find(contents)?.value
     var cleanedContents = contents.replace(date,"")
     cleanedContents = contents.replace(e,"")
+    val allLs = l.findAll(cleanedContents).map { it.value }
+    cleanedContents = cleanedContents.replace(l,"")
+
     return cleanedContents
 }
 
