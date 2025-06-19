@@ -11,6 +11,7 @@ import nl.adaptivity.xmlutil.serialization.XmlValue
 class Calcit() {
     @XmlValue
     val llist: LList? = null
+
 }
 
 @Serializable
