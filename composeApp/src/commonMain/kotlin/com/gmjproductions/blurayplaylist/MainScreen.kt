@@ -21,7 +21,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,10 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
-import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.gmjproductions.blurayplaylist.models.Calcit
-import nl.adaptivity.xmlutil.serialization.XML
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.path
+import io.github.vinceglb.filekit.readString
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.io.BufferedReader
 import java.io.FileReader
@@ -48,6 +48,7 @@ fun MainScreen() {
         Surface(Modifier.fillMaxSize()) {
             var inputFile by remember { mutableStateOf<String?>(null) }
             var saveFile by remember { mutableStateOf<String?>(null) }
+            var contents by remember { mutableStateOf<String?>(null) }
 
             var showFilePicker by remember { mutableStateOf(false) }
             var showDirectoryPicker by remember { mutableStateOf(false) }
@@ -63,13 +64,17 @@ fun MainScreen() {
                 }
                 ShowResults(inputSettings)
             }
-            SelectInputFile(showFilePicker) {
-                showFilePicker = false
-                inputFile = it
+            LaunchedEffect(showFilePicker) {
+                if (showFilePicker) {
+                    val file = FileKit.openFilePicker()
+                    file?.also {
+                        inputFile = it.path
+                        contents = it.readString()
+                    }
+                    showFilePicker = false
+                }
             }
-            SelectSaveDirectory(saveFile?.isNotBlank() ?: false, "", saveFile ?: "") {
-                saveContentsPath = it
-            }
+
             LaunchedEffect(inputFile) {
                 inputFile?.also {
                     System.out.println("Before Parse")
@@ -86,24 +91,6 @@ fun MainScreen() {
     }
 }
 
-@Composable
-fun SelectInputFile(showFilePicker: Boolean, onFileSelected: (String?) -> Unit) {
-    FilePicker(showFilePicker, fileExtensions = listOf("mpf")) {
-        onFileSelected(it?.path)
-    }
-}
-
-@Composable
-fun SelectSaveDirectory(
-    show: Boolean,
-    initialDirectory: String,
-    title: String,
-    onDirectorySelected: (String?) -> Unit
-) {
-    DirectoryPicker(show, initialDirectory, title) {
-        onDirectorySelected(it)
-    }
-}
 
 
 fun ParseInputFile(filePath: String?) = filePath?.let {
@@ -134,7 +121,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: (String) 
 
 
     Column(
-        Modifier.fillMaxWidth().wrapContentHeight().background(color = Color.Yellow).height(100.dp),
+        Modifier.fillMaxWidth().wrapContentHeight().background(color = Color.Yellow).height(150.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
         Row(
@@ -156,7 +143,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: (String) 
         ) {
             TextField(saveFileName, { saveFileName = it }, Modifier.width(300.dp),colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White))
            Spacer(Modifier.width(10.dp))
-            Button(onClick = { onSaveFile(saveFileName) }, enabled = saveFileName.isNotBlank()) {
+            Button(onClick = { onSaveFile(saveFileName) }, enabled = filePath?.isNotBlank()?:false && saveFileName.isNotBlank()) {
                 Text("Save")
             }
 

@@ -17,12 +17,12 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     jvm("desktop")
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -38,7 +38,12 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.xmlutilcore)
             implementation(libs.xmlutilserialization)
-            implementation(libs.mpfilepicker)
+
+            implementation(libs.filekit.core)
+            // Enables FileKit dialogs without Compose dependencies
+            implementation(libs.filekit.dialogs)
+            // Enables FileKit dialogs with Composable utilities
+            //implementation(libs.filekit.dialogs.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

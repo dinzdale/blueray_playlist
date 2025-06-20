@@ -13,14 +13,16 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.3"
 core = "0.91.1"
+filekitDialogsCompose = "0.10.0-beta04"
 junit = "4.13.2"
 kotlin = "2.1.10"
 kotlin-serialization = "2.1.20"
-kotlinx-coroutines = "1.10.1"
-mpfilepicker = "3.1.0"
+kotlinx-coroutines = "1.10.2"
+
 
 [libraries]
-mpfilepicker = { module = "com.darkrockstudios:mpfilepicker", version.ref = "mpfilepicker" }
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekitDialogsCompose" }
+filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekitDialogsCompose" }
 xmlutilserialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "core" }
 xmlutilcore = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "core" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
