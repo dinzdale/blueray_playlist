@@ -34,9 +34,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.Calcit
 import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.openFilePicker
+import io.github.vinceglb.filekit.dialogs.openFileSaver
+import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.readString
+import io.github.vinceglb.filekit.writeString
+import kotlinx.serialization.decodeFromString
+import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.io.BufferedReader
 import java.io.FileReader
@@ -46,21 +53,19 @@ import java.io.FileReader
 fun MainScreen() {
     MaterialTheme {
         Surface(Modifier.fillMaxSize()) {
-            var inputFile by remember { mutableStateOf<String?>(null) }
-            var saveFile by remember { mutableStateOf<String?>(null) }
+            var inputFile by remember { mutableStateOf<PlatformFile?>(null) }
             var contents by remember { mutableStateOf<String?>(null) }
 
             var showFilePicker by remember { mutableStateOf(false) }
-            var showDirectoryPicker by remember { mutableStateOf(false) }
-            var parsedContents by remember { mutableStateOf<String?>(null) }
+            var showFileSaver by remember { mutableStateOf(false) }
+
             var inputSettings by remember { mutableStateOf<Calcit?>(null) }
-            var saveContentsPath by remember { mutableStateOf<String?>(null) }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
-                Header(inputFile, {
+                Header(inputFile?.path, {
                     showFilePicker = true
                 }) {
-                    saveFile = it
+                    showFileSaver = true
                 }
                 ShowResults(inputSettings)
             }
@@ -68,29 +73,41 @@ fun MainScreen() {
                 if (showFilePicker) {
                     val file = FileKit.openFilePicker()
                     file?.also {
-                        inputFile = it.path
+                        inputFile = it
                         contents = it.readString()
                     }
                     showFilePicker = false
                 }
             }
 
-            LaunchedEffect(inputFile) {
-                inputFile?.also {
-                    System.out.println("Before Parse")
-                    parsedContents = ParseInputFile(it)
-//                    inputSettings = ParseInputFile(it)
-//                    System.out.println("After Parse")
-//                    inputSettings?.llist?.itemList?.forEach {
-//                        System.out.println("${it.ID}: ${it.value}")
-//                    }
+            LaunchedEffect(contents) {
+                contents = contents?.let {
+                    cleanupFileContents(it)
+                }
+                contents?.let {
+                    try {
+                        inputSettings = XML.decodeFromString(it)
+                    }
+                    catch(ex:Exception) {
+
+                    }
+                }
+            }
+            LaunchedEffect(showFileSaver) {
+                if (showFileSaver) {
+                    contents?.also {
+                        if (it.isNotBlank()) {
+                            val file = FileKit.openFileSaver(inputFile?.name?:"", directory = inputFile)
+                            file?.writeString(it)
+                        }
+                    }
+                      showFileSaver = false
                 }
             }
 
         }
     }
 }
-
 
 
 fun ParseInputFile(filePath: String?) = filePath?.let {
@@ -114,10 +131,9 @@ fun cleanupFileContents(contents: String): String {
     return cleanedContents
 }
 
+
 @Composable
-fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: (String) -> Unit) {
-    var saveFileName by remember { mutableStateOf("") }
-    val tfState = rememberTextFieldState()
+fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Unit) {
 
 
     Column(
@@ -141,9 +157,8 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: (String) 
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.Start
         ) {
-            TextField(saveFileName, { saveFileName = it }, Modifier.width(300.dp),colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White))
-           Spacer(Modifier.width(10.dp))
-            Button(onClick = { onSaveFile(saveFileName) }, enabled = filePath?.isNotBlank()?:false && saveFileName.isNotBlank()) {
+            Spacer(Modifier.width(10.dp))
+            Button(onClick = onSaveFile, enabled = filePath?.isNotBlank() ?: false) {
                 Text("Save")
             }
 
