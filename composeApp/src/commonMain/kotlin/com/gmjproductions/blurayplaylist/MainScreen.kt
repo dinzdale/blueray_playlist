@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -60,6 +61,7 @@ fun MainScreen() {
             var showFileSaver by remember { mutableStateOf(false) }
 
             var inputSettings by remember { mutableStateOf<Calcit?>(null) }
+            var errorMessage by remember { mutableStateOf<String?>(null) }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
                 Header(inputFile?.path, {
@@ -87,9 +89,8 @@ fun MainScreen() {
                 contents?.let {
                     try {
                         inputSettings = XML.decodeFromString(it)
-                    }
-                    catch(ex:Exception) {
-
+                    } catch (ex: Exception) {
+                        errorMessage = ex.message
                     }
                 }
             }
@@ -97,14 +98,17 @@ fun MainScreen() {
                 if (showFileSaver) {
                     contents?.also {
                         if (it.isNotBlank()) {
-                            val file = FileKit.openFileSaver(inputFile?.name?:"", directory = inputFile)
+                            val file =
+                                FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
                             file?.writeString(it)
                         }
                     }
-                      showFileSaver = false
+                    showFileSaver = false
                 }
             }
-
+            showAlert(errorMessage, { errorMessage = null }) {
+                errorMessage = null
+            }
         }
     }
 }
@@ -182,6 +186,21 @@ fun ShowResults(calcit: Calcit?) {
     }
 }
 
+@Composable
+fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
+    message?.also {
+        AlertDialog(
+            onExit,
+            confirmButton = @Composable {
+                Button(onConfirm) {
+                    Text("OK")
+                }
+            },
+            title = @Composable { Text("Serialing Error") },
+            text = @Composable { Text(it) }
+        )
+    }
+}
 
 @Composable
 @Preview
