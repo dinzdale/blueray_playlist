@@ -1,36 +1,26 @@
 package com.gmjproductions.blurayplaylist.models
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlElement
+import nl.adaptivity.xmlutil.serialization.XmlId
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 
 @Serializable
-@XmlSerialName(value = "CALCIT")
-@XmlElement
-class Calcit() {
-    @XmlValue
-    val llist: LList? = null
-
-}
+data class Calcit(val llist: LList)
 
 @Serializable
 @XmlSerialName(value = "L")
-class LList() {
+data class LList(val itemList: List<MultiAVCHDItem> )
 
-    val itemList: List<MultiAVCHDItem> = listOf()
-
-}
 
 @Serializable
 @XmlSerialName(value = "F")
-class MultiAVCHDItem() {
-    @XmlElement
-    val ID: String = ""
+data class MultiAVCHDItem(@XmlId val ID: String, @XmlValue(true) val value : String="")
 
-    @XmlValue
-    val value: String? = null
-}
-
+@Serializable
+@XmlSerialName(value = "L")
+data class L(@XmlValue(true) val value : String = "")
 
 

@@ -125,15 +125,8 @@ fun ParseInputFile(filePath: String?) = filePath?.let {
 }
 
 fun cleanupFileContents(contents: String): String {
-    val date = "<.*DATE.*F>".toRegex()
-    val e = "(<E/>)+".toRegex()
-    val l = "(<L>.*</L>)+".toRegex()
-    val stringToRemove = date.find(contents)?.value
-    var cleanedContents = contents.replace(date, "")
-    cleanedContents = contents.replace(e, "")
-    val allLs = l.findAll(cleanedContents).map { it.value }.toList()
-    cleanedContents = cleanedContents.replace(l, "")
-
+    val E = "<E/>".toRegex()
+    var cleanedContents = E.replace(contents,"")
     return cleanedContents
 }
 
@@ -179,7 +172,7 @@ fun ShowResults(calcit: Calcit?) {
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
             items(it) { nxtItem ->
                 Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-                    Text("${nxtItem.ID}: ${nxtItem.value}")
+                    Text("${nxtItem.ID}: ")//${nxtItem.value}")
                 }
             }
         }
