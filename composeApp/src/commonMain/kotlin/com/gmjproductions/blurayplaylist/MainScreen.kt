@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.Calcit
 import io.github.vinceglb.filekit.FileKit
@@ -196,8 +198,8 @@ fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
                     Text("OK")
                 }
             },
-            title = @Composable { Text("Serialing Error") },
-            text = @Composable { Text(it) }
+            title = @Composable { Text("Serializing Error", style = TextStyle(color = Color.Black, fontWeight = FontWeight.Medium)) },
+            text = @Composable { Text(it, style = TextStyle(color=Color.Red, fontWeight = FontWeight.Bold )) }
         )
     }
 }
