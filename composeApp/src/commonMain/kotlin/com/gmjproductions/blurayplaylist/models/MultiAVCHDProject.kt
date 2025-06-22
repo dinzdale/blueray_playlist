@@ -1,6 +1,7 @@
 package com.gmjproductions.blurayplaylist.models
 
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlId
@@ -17,10 +18,13 @@ data class LList(val itemList: List<MultiAVCHDItem> )
 
 @Serializable
 @XmlSerialName(value = "F")
-data class MultiAVCHDItem(@XmlId val ID: String, @XmlValue(true) val value : String="")
+data class MultiAVCHDItem(@XmlId val ID: String, @XmlValue val value:  String )
 
 @Serializable
 @XmlSerialName(value = "L")
-data class L(@XmlValue(true) val value : String = "")
+data class L(@XmlValue(true) val value : String = "") : TheValue()
+@Serializable
+sealed class TheValue
+
 
 

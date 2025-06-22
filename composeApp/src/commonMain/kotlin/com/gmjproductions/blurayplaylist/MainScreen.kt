@@ -172,7 +172,7 @@ fun ShowResults(calcit: Calcit?) {
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
             items(it) { nxtItem ->
                 Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-                    Text("${nxtItem.ID}: ")//${nxtItem.value}")
+                    Text("${nxtItem.ID}: ${nxtItem.value}")//${nxtItem.value}")
                 }
             }
         }
