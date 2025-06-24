@@ -22,9 +22,7 @@ data class MultiAVCHDItem(val ID: String, @XmlValue val value:  String )
 
 @Serializable
 @XmlSerialName(value = "L")
-data class L(@XmlValue(true) val value : String = "") : TheValue()
-@Serializable
-sealed class TheValue
+data class L2(@XmlValue(true) val value : String)
 
 
 

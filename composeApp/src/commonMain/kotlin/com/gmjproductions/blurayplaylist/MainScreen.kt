@@ -36,6 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.Calcit
+import com.gmjproductions.blurayplaylist.models.L2
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
@@ -129,7 +130,8 @@ fun cleanupFileContents(contents: String): String {
     val L = "(<L>(.*)+</L>)".toRegex()
 
     var cleanedContents = E.replace(contents,"")
-    val els = L.findAll(cleanedContents).toList().map { it.value }
+    val els = L.findAll(cleanedContents).toList().map { it.value }.map { XML.decodeFromString<L2>(it) }
+
     cleanedContents = L.replace(cleanedContents,"")
     return cleanedContents
 }
