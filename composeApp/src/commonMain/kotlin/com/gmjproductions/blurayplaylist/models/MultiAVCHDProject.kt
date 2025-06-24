@@ -9,7 +9,7 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 
 @Serializable
-data class Calcit(val llist: LList)
+data class Calcit(val llist: List<LList>)
 
 @Serializable
 @XmlSerialName(value = "L")
@@ -18,7 +18,7 @@ data class LList(val itemList: List<MultiAVCHDItem> )
 
 @Serializable
 @XmlSerialName(value = "F")
-data class MultiAVCHDItem(@XmlId val ID: String, @XmlValue val value:  String )
+data class MultiAVCHDItem(val ID: String, @XmlValue val value:  String )
 
 @Serializable
 @XmlSerialName(value = "L")

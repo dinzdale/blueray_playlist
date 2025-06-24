@@ -88,7 +88,7 @@ fun MainScreen() {
                 contents = contents?.let {
                     cleanupFileContents(it)
                 }
-                contents?.let {
+                contents?.also {
                     try {
                         inputSettings = XML.decodeFromString(it)
                     } catch (ex: Exception) {
@@ -126,7 +126,11 @@ fun ParseInputFile(filePath: String?) = filePath?.let {
 
 fun cleanupFileContents(contents: String): String {
     val E = "<E/>".toRegex()
+    val L = "(<L>(.*)+</L>)".toRegex()
+
     var cleanedContents = E.replace(contents,"")
+    val els = L.findAll(cleanedContents).toList().map { it.value }
+    cleanedContents = L.replace(cleanedContents,"")
     return cleanedContents
 }
 
@@ -167,18 +171,18 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 
 @Composable
 fun ShowResults(calcit: Calcit?) {
-    calcit?.llist?.itemList?.also {
-        val lazyListState = rememberLazyListState()
-        LazyColumn(state = lazyListState, userScrollEnabled = true) {
-            items(it) { nxtItem ->
-                Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-                    Text("${nxtItem.ID}: ${nxtItem.value}")//${nxtItem.value}")
-                }
-            }
-        }
-    } ?: Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-        Text("Empty")
-    }
+//    calcit?.llist?.itemList?.also {
+//        val lazyListState = rememberLazyListState()
+//        LazyColumn(state = lazyListState, userScrollEnabled = true) {
+//            items(it) { nxtItem ->
+//                Row(Modifier.fillMaxWidth().wrapContentHeight()) {
+//                    Text("${nxtItem.ID}: ${nxtItem.value}")//${nxtItem.value}")
+//                }
+//            }
+//        }
+//    } ?: Row(Modifier.fillMaxWidth().wrapContentHeight()) {
+//        Text("Empty")
+//    }
 }
 
 @Composable
