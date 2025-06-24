@@ -173,19 +173,22 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 
 @Composable
 fun ShowResults(calcit: Calcit?) {
-//    calcit?.llist?.itemList?.also {
-//        val lazyListState = rememberLazyListState()
-//        LazyColumn(state = lazyListState, userScrollEnabled = true) {
-//            items(it) { nxtItem ->
-//                Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-//                    Text("${nxtItem.ID}: ${nxtItem.value}")//${nxtItem.value}")
-//                }
-//            }
-//        }
-//    } ?: Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-//        Text("Empty")
-//    }
+    val lazyListState = rememberLazyListState()
+    calcit?.llist?.also {
+        LazyColumn(state = lazyListState, userScrollEnabled = true) {
+            items(it) { nxtList ->
+                nxtList.itemList.forEach {
+                    Row(Modifier.fillMaxWidth().wrapContentHeight()) {
+                        Text("${it.ID}: ${it.value}")
+                    }
+                }
+            }
+        } ?: Row(Modifier.fillMaxWidth().wrapContentHeight()) {
+            Text("Empty")
+        }
+    }
 }
+
 
 @Composable
 fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
