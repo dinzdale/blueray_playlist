@@ -92,15 +92,7 @@ fun MainScreen() {
                         calcIt = c
                         parsedContents = p
                     }
-                    message
                 }
-//                contents?.also {
-//                    try {
-//                        inputSettings = XML.decodeFromString(it)
-//                    } catch (ex: Exception) {
-//                        errorMessage = ex.message
-//                    }
-//                }
             }
             LaunchedEffect(showFileSaver) {
                 if (showFileSaver) {
