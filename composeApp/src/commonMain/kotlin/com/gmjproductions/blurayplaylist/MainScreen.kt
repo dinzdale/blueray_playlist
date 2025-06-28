@@ -15,14 +15,11 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,18 +36,14 @@ import com.gmjproductions.blurayplaylist.models.Calcit
 import com.gmjproductions.blurayplaylist.models.L2
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
-import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
-import kotlinx.serialization.decodeFromString
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import java.io.BufferedReader
-import java.io.FileReader
 
 
 @Composable
@@ -59,11 +52,13 @@ fun MainScreen() {
         Surface(Modifier.fillMaxSize()) {
             var inputFile by remember { mutableStateOf<PlatformFile?>(null) }
             var contents by remember { mutableStateOf<String?>(null) }
+            var parsedContents by remember { mutableStateOf<String?>(null) }
 
             var showFilePicker by remember { mutableStateOf(false) }
+
             var showFileSaver by remember { mutableStateOf(false) }
 
-            var inputSettings by remember { mutableStateOf<Calcit?>(null) }
+            var calcIt by remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
@@ -72,7 +67,7 @@ fun MainScreen() {
                 }) {
                     showFileSaver = true
                 }
-                ShowResults(inputSettings)
+                ShowResults(calcIt)
             }
             LaunchedEffect(showFilePicker) {
                 if (showFilePicker) {
@@ -86,20 +81,30 @@ fun MainScreen() {
             }
 
             LaunchedEffect(contents) {
-                contents = contents?.let {
-                    cleanupFileContents(it)
+                val result = contents?.let {
+                    parseFileContents(it)
                 }
-                contents?.also {
-                    try {
-                        inputSettings = XML.decodeFromString(it)
-                    } catch (ex: Exception) {
-                        errorMessage = ex.message
+                result?.also{
+                    val (x,message) = it
+                    errorMessage = message
+                    x?.also {
+                        val (p, c) = x
+                        calcIt = c
+                        parsedContents = p
                     }
+                    message
                 }
+//                contents?.also {
+//                    try {
+//                        inputSettings = XML.decodeFromString(it)
+//                    } catch (ex: Exception) {
+//                        errorMessage = ex.message
+//                    }
+//                }
             }
             LaunchedEffect(showFileSaver) {
                 if (showFileSaver) {
-                    contents?.also {
+                    parsedContents?.also {
                         if (it.isNotBlank()) {
                             val file =
                                 FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
@@ -117,23 +122,22 @@ fun MainScreen() {
 }
 
 
-fun ParseInputFile(filePath: String?) = filePath?.let {
-    val fileReader = FileReader(filePath)
-    var contents = BufferedReader(fileReader).readText()
-    contents = cleanupFileContents(contents)
-    //XML.decodeFromString<Calcit>(contents)
-    contents
-}
 
-fun cleanupFileContents(contents: String): String {
+
+fun parseFileContents(contents: String): Pair<Pair<String,Calcit>?,String?> {
     val E = "<E/>".toRegex()
     val L = "(<L>(.*)+</L>)".toRegex()
 
     var cleanedContents = E.replace(contents,"")
     val els = L.findAll(cleanedContents).toList().map { it.value }.map { XML.decodeFromString<L2>(it) }
-
     cleanedContents = L.replace(cleanedContents,"")
-    return cleanedContents
+    try {
+        val calcit = XML.decodeFromString<Calcit>(cleanedContents)
+        return Pair(Pair(cleanedContents,calcit),null)
+    }
+    catch (ex:Exception){
+        return Pair(null,ex.message)
+    }
 }
 
 
