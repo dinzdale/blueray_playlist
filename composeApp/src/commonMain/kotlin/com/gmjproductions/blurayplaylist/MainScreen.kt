@@ -47,6 +47,7 @@ import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
+import nl.adaptivity.xmlutil.XmlWriter
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -103,13 +104,16 @@ fun MainScreen() {
             }
             LaunchedEffect(showFileSaver) {
                 if (showFileSaver) {
-                    parsedContents?.also {
-                        if (it.isNotBlank()) {
-                            val file =
-                                FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
-                            file?.writeString(it)
-                        }
+                    calcIt.value?.also {
+
+                        val file =
+                            FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
+                        //file?.writeString(it)
+                        val encodedResult =  XML.encodeToString<Calcit>(it)
+                        file?.writeString(encodedResult)
+
                     }
+
                     showFileSaver = false
                 }
             }
