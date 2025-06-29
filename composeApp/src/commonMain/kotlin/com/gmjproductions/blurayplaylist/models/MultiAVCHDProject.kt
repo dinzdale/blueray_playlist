@@ -18,7 +18,7 @@ data class LList(val itemList: List<MultiAVCHDItem> )
 
 @Serializable
 @XmlSerialName(value = "F")
-data class MultiAVCHDItem(val ID: String, @XmlValue val value:  String )
+data class MultiAVCHDItem(val ID: String, @XmlValue var value:  String )
 
 @Serializable
 @XmlSerialName(value = "L")

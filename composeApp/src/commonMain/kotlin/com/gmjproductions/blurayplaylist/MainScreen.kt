@@ -14,14 +14,18 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.Calcit
 import com.gmjproductions.blurayplaylist.models.L2
+import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.openFilePicker
@@ -45,6 +50,8 @@ import io.github.vinceglb.filekit.writeString
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+val uncrop =
+    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 
 @Composable
 fun MainScreen() {
@@ -58,7 +65,7 @@ fun MainScreen() {
 
             var showFileSaver by remember { mutableStateOf(false) }
 
-            var calcIt by remember { mutableStateOf<Calcit?>(null) }
+            var calcIt = remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
@@ -84,12 +91,12 @@ fun MainScreen() {
                 val result = contents?.let {
                     parseFileContents(it)
                 }
-                result?.also{
-                    val (x,message) = it
+                result?.also {
+                    val (x, message) = it
                     errorMessage = message
                     x?.also {
                         val (p, c) = x
-                        calcIt = c
+                        calcIt.value = c
                         parsedContents = p
                     }
                 }
@@ -114,21 +121,19 @@ fun MainScreen() {
 }
 
 
-
-
-fun parseFileContents(contents: String): Pair<Pair<String,Calcit>?,String?> {
+fun parseFileContents(contents: String): Pair<Pair<String, Calcit>?, String?> {
     val E = "<E/>".toRegex()
     val L = "(<L>(.*)+</L>)".toRegex()
 
-    var cleanedContents = E.replace(contents,"")
-    val els = L.findAll(cleanedContents).toList().map { it.value }.map { XML.decodeFromString<L2>(it) }
-    cleanedContents = L.replace(cleanedContents,"")
+    var cleanedContents = E.replace(contents, "")
+    val els =
+        L.findAll(cleanedContents).toList().map { it.value }.map { XML.decodeFromString<L2>(it) }
+    cleanedContents = L.replace(cleanedContents, "")
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
-        return Pair(Pair(cleanedContents,calcit),null)
-    }
-    catch (ex:Exception){
-        return Pair(null,ex.message)
+        return Pair(Pair(cleanedContents, calcit), null)
+    } catch (ex: Exception) {
+        return Pair(null, ex.message)
     }
 }
 
@@ -168,23 +173,51 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 }
 
 @Composable
-fun ShowResults(calcit: Calcit?) {
+fun ShowResults(calcit: MutableState<Calcit?>) {
     val lazyListState = rememberLazyListState()
-    calcit?.llist?.also {
+
+
+    calcit?.value?.llist?.also { llist ->
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
-            items(it) { nxtList ->
-                nxtList.itemList.forEach {
-                    Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-                        Text("${it.ID}: ${it.value}")
-                    }
+            itemsIndexed(llist) { index, nxtList ->
+                var nxtmultiAVCHDItem = nxtList.itemList.filter { it.ID == "UNCROP" }.first()
+
+                MultiAVCHDItemRow(nxtmultiAVCHDItem) { newItem ->
+                    val indexItemToUpdate =
+                        calcit.value!!.llist[index].itemList.indexOf(nxtmultiAVCHDItem)
+                    calcit.value!!.llist[index].itemList[indexItemToUpdate].value = newItem.value
                 }
+
+
             }
-        } ?: Row(Modifier.fillMaxWidth().wrapContentHeight()) {
-            Text("Empty")
         }
     }
 }
 
+@Composable
+fun MultiAVCHDItemRow(multiAVCHDItem: MultiAVCHDItem, onUpdate: (MultiAVCHDItem) -> Unit) {
+    var textFieldState = rememberTextFieldState(multiAVCHDItem.value)
+    var text by remember { mutableStateOf(multiAVCHDItem.value) }
+    Row(
+        Modifier.fillMaxWidth().wrapContentHeight(),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        Text(multiAVCHDItem.ID, Modifier.width(100.dp))
+        TextField(text, { text = it })
+        Button({
+            text = uncrop.value
+        }) {
+            Text("correct")
+        }
+        Button({
+            onUpdate(MultiAVCHDItem(multiAVCHDItem.ID, text))
+        }) {
+            Text("save")
+        }
+
+    }
+
+}
 
 @Composable
 fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
@@ -196,10 +229,21 @@ fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
                     Text("OK")
                 }
             },
-            title = @Composable { Text("Serializing Error", style = TextStyle(color = Color.Black, fontWeight = FontWeight.Medium)) },
-            text = @Composable { Text(it, style = TextStyle(color=Color.Red, fontWeight = FontWeight.Bold )) }
+            title = @Composable {
+                Text(
+                    "Serializing Error",
+                    style = TextStyle(color = Color.Black, fontWeight = FontWeight.Medium)
+                )
+            },
+            text = @Composable {
+                Text(
+                    it,
+                    style = TextStyle(color = Color.Red, fontWeight = FontWeight.Bold)
+                )
+            }
         )
     }
+
 }
 
 @Composable
