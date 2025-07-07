@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -47,9 +46,9 @@ import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
-import nl.adaptivity.xmlutil.XmlWriter
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
 
 val uncrop =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
@@ -68,6 +67,7 @@ fun MainScreen() {
 
             var calcIt = remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
+            var els = remember { mutableListOf<String>() }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
                 Header(inputFile?.path, {
@@ -96,9 +96,10 @@ fun MainScreen() {
                     val (x, message) = it
                     errorMessage = message
                     x?.also {
-                        val (p, c) = x
+                        val (p, c, l) = x
                         calcIt.value = c
                         parsedContents = p
+                        els = l.map { XML.encodeToWriter(El) }
                     }
                 }
             }
@@ -108,9 +109,15 @@ fun MainScreen() {
 
                         val file =
                             FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
-                        //file?.writeString(it)
-                        val encodedResult =  XML.encodeToString<Calcit>(it)
-                        file?.writeString(encodedResult)
+
+                        var result = XML.encodeToString<Calcit>(it)
+                        println(result)
+                        result = "(</F>)+".toRegex().replace(result,"$1\n")
+
+                        //result = "(<F.*</F>)+".toRegex().replace(result,"$1*****")
+
+
+                        file?.writeString(result)
 
                     }
 
@@ -125,7 +132,7 @@ fun MainScreen() {
 }
 
 
-fun parseFileContents(contents: String): Pair<Pair<String, Calcit>?, String?> {
+fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?,String?> {
     val E = "<E/>".toRegex()
     val L = "(<L>(.*)+</L>)".toRegex()
 
@@ -135,7 +142,16 @@ fun parseFileContents(contents: String): Pair<Pair<String, Calcit>?, String?> {
     cleanedContents = L.replace(cleanedContents, "")
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
-        return Pair(Pair(cleanedContents, calcit), null)
+        // restore L
+//        calcit.llist.forEach{
+//            it.itemList.forEachIndexed { index, multiAVCHDItem ->
+//                if (multiAVCHDItem.ID == "CHAPNAMES") {
+//                    multiAVCHDItem.value = els[index].value
+//                }
+//            }
+//
+//        }
+        return Pair(Triple(cleanedContents, calcit, els),null)
     } catch (ex: Exception) {
         return Pair(null, ex.message)
     }
