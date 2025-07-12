@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.Calcit
 import com.gmjproductions.blurayplaylist.models.L2
+import com.gmjproductions.blurayplaylist.models.L3
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
@@ -67,7 +68,7 @@ fun MainScreen() {
 
             var calcIt = remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
-            var els = remember { mutableListOf<String>() }
+            var els = remember { mutableListOf<L2>() }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
                 Header(inputFile?.path, {
@@ -99,7 +100,7 @@ fun MainScreen() {
                         val (p, c, l) = x
                         calcIt.value = c
                         parsedContents = p
-                        els = l.map { XML.encodeToWriter(El) }
+                        els.addAll(l)
                     }
                 }
             }
@@ -112,7 +113,7 @@ fun MainScreen() {
 
                         var result = XML.encodeToString<Calcit>(it)
                         println(result)
-                        result = "(</F>)+".toRegex().replace(result,"$1\n")
+                        result = "(</F>)+".toRegex().replace(result, "$1\n")
 
                         //result = "(<F.*</F>)+".toRegex().replace(result,"$1*****")
 
@@ -132,26 +133,21 @@ fun MainScreen() {
 }
 
 
-fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?,String?> {
+fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?, String?> {
     val E = "<E/>".toRegex()
     val L = "(<L>(.*)+</L>)".toRegex()
 
     var cleanedContents = E.replace(contents, "")
-    val els =
-        L.findAll(cleanedContents).toList().map { it.value }.map { XML.decodeFromString<L2>(it) }
-    cleanedContents = L.replace(cleanedContents, "")
+    var els = L.findAll(cleanedContents).map { it.value }.toList()
+    var el2s = els.map { XML.decodeFromString<L2>(it) }
+
+    els.forEachIndexed { index, s ->
+        val L3 = XML.encodeToString(L3(el2s[index].value))
+        cleanedContents = cleanedContents.replace(s, L3)
+    }
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
-        // restore L
-//        calcit.llist.forEach{
-//            it.itemList.forEachIndexed { index, multiAVCHDItem ->
-//                if (multiAVCHDItem.ID == "CHAPNAMES") {
-//                    multiAVCHDItem.value = els[index].value
-//                }
-//            }
-//
-//        }
-        return Pair(Triple(cleanedContents, calcit, els),null)
+        return Pair(Triple(cleanedContents, calcit, el2s), null)
     } catch (ex: Exception) {
         return Pair(null, ex.message)
     }
