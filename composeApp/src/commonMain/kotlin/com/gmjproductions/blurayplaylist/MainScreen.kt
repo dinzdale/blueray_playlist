@@ -111,7 +111,12 @@ fun MainScreen() {
                         val file =
                             FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
 
+                        // add els back
+                        it.llist[0].itemList.first {
+                            it.ID = "INTAP"
+                        }.
                         var result = XML.encodeToString<Calcit>(it)
+
                         println(result)
                         result = "(</F>)+".toRegex().replace(result, "$1\n")
 
@@ -141,10 +146,8 @@ fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?,
     var els = L.findAll(cleanedContents).map { it.value }.toList()
     var el2s = els.map { XML.decodeFromString<L2>(it) }
 
-    els.forEachIndexed { index, s ->
-        val L3 = XML.encodeToString(L3(el2s[index].value))
-        cleanedContents = cleanedContents.replace(s, L3)
-    }
+    cleanedContents = L.replace(cleanedContents,"")
+
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
         return Pair(Triple(cleanedContents, calcit, el2s), null)
