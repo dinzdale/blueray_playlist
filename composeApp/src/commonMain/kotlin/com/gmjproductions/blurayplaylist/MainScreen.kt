@@ -99,6 +99,7 @@ fun MainScreen() {
                 val parsedResults = contents?.let {
                     parseFileContents(it)
                 }
+                println("parsedResults: $parsedResults")
                 parsedResults?.also {
                     val (parsedParts, message) = it
                     errorMessage = message
