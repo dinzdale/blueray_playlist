@@ -55,7 +55,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 val uncrop =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 
+typealias ParsedResults = Pair<ParsedParts?,String?>
 typealias FilteredLs = Pair<List<String?>,List<String?>>
+typealias  ParsedParts = Triple<String,Calcit,FilteredLs>
+
 @Composable
 fun MainScreen() {
     MaterialTheme {
@@ -93,17 +96,17 @@ fun MainScreen() {
             }
 
             LaunchedEffect(contents) {
-                val result = contents?.let {
+                val parsedResults = contents?.let {
                     parseFileContents(it)
                 }
-                result?.also {
-                    val (x, message) = it
+                parsedResults?.also {
+                    val (parsedParts, message) = it
                     errorMessage = message
-                    x?.also {
-                        val (p, c, l) = x
-                        calcIt.value = c
-                        parsedContents = p
-                        val (intap,chapnames) = l
+                    parsedParts?.also {
+                        val (parsedContentS, calcit, filteredLs) = it
+                        calcIt.value = calcit
+                        parsedContents = parsedContentS
+                        val (intap,chapnames) = filteredLs
                         inTapLs.addAll(intap)
                         chapNamesLs.addAll(chapnames)
                     }
@@ -141,9 +144,9 @@ fun MainScreen() {
 }
 
 
-fun parseFileContents(contents: String): Pair<Triple<String, Calcit, FilteredLs>?, String?> {
+fun parseFileContents(contents: String): ParsedResults {
     val E = "<E/>".toRegex()
-    val L = "(<L>(.*)+</L>)".toRegex()
+    val L = "(<L>(.*)</L>)".toRegex()
     val inTapL = "<F ID=\"INTAP\">[\\n\\s]+(.*)[\\n\\s]+</F>".toRegex()
     val chapNamesL = "<F ID=\"CHAPNAMES\">[\\n\\s]+(.*)[\\n\\s]+<\\/F>".toRegex()
 
@@ -151,16 +154,15 @@ fun parseFileContents(contents: String): Pair<Triple<String, Calcit, FilteredLs>
     val inTapLList = inTapL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
     val chapNamesLList = chapNamesL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
 
-    var els = L.findAll(cleanedContents).map { it.value }.toList()
-    var el2s = els.map { XML.decodeFromString<L2>(it) }
-
     cleanedContents = L.replace(cleanedContents,"")
 
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
-        return Pair(Triple(cleanedContents, calcit, FilteredLs(inTapLList,chapNamesLList)), null)
+        val pr = ParsedResults(ParsedParts(cleanedContents,
+            calcit,FilteredLs(inTapLList,chapNamesLList)),null)
+        return pr
     } catch (ex: Exception) {
-        return Pair(null, ex.message)
+        return ParsedResults(null, ex.message)
     }
 }
 
