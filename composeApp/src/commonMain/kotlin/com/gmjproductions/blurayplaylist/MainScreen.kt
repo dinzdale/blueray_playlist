@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,6 +55,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 val uncrop =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 
+typealias FilteredLs = Pair<List<String?>,List<String?>>
 @Composable
 fun MainScreen() {
     MaterialTheme {
@@ -68,7 +70,8 @@ fun MainScreen() {
 
             var calcIt = remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
-            var els = remember { mutableListOf<L2>() }
+            var inTapLs = remember { mutableStateListOf<String?>() }
+            var chapNamesLs = remember { mutableStateListOf<String?>() }
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
                 Header(inputFile?.path, {
@@ -100,7 +103,9 @@ fun MainScreen() {
                         val (p, c, l) = x
                         calcIt.value = c
                         parsedContents = p
-                        els.addAll(l)
+                        val (intap,chapnames) = l
+                        inTapLs.addAll(intap)
+                        chapNamesLs.addAll(chapnames)
                     }
                 }
             }
@@ -136,7 +141,7 @@ fun MainScreen() {
 }
 
 
-fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?, String?> {
+fun parseFileContents(contents: String): Pair<Triple<String, Calcit, FilteredLs>?, String?> {
     val E = "<E/>".toRegex()
     val L = "(<L>(.*)+</L>)".toRegex()
     val inTapL = "<F ID=\"INTAP\">[\\n\\s]+(.*)[\\n\\s]+</F>".toRegex()
@@ -153,7 +158,7 @@ fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?,
 
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
-        return Pair(Triple(cleanedContents, calcit, el2s), null)
+        return Pair(Triple(cleanedContents, calcit, FilteredLs(inTapLList,chapNamesLList)), null)
     } catch (ex: Exception) {
         return Pair(null, ex.message)
     }
