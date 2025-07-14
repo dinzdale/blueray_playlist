@@ -42,6 +42,7 @@ import com.gmjproductions.blurayplaylist.models.L3
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.absolutePath
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.name
@@ -56,8 +57,8 @@ val uncrop =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 
 typealias ParsedResults = Pair<ParsedParts?,String?>
-typealias FilteredLs = Pair<List<String?>,List<String?>>
-typealias  ParsedParts = Triple<String,Calcit,FilteredLs>
+typealias FilteredLs = Pair<String?,String?>
+typealias  ParsedParts = Triple<String,Calcit,List<FilteredLs>>
 
 @Composable
 fun MainScreen() {
@@ -73,11 +74,11 @@ fun MainScreen() {
 
             var calcIt = remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
-            var inTapLs = remember { mutableStateListOf<String?>() }
-            var chapNamesLs = remember { mutableStateListOf<String?>() }
+            var filterLsList = remember { mutableStateListOf<FilteredLs?>() }
+
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
-                Header(inputFile?.path, {
+                Header(inputFile?.absolutePath(), {
                     showFilePicker = true
                 }) {
                     showFileSaver = true
@@ -104,12 +105,10 @@ fun MainScreen() {
                     val (parsedParts, message) = it
                     errorMessage = message
                     parsedParts?.also {
-                        val (parsedContentS, calcit, filteredLs) = it
+                        val (parsedContentS, calcit, filteredLsList) = it
                         calcIt.value = calcit
                         parsedContents = parsedContentS
-                        val (intap,chapnames) = filteredLs
-                        inTapLs.addAll(intap)
-                        chapNamesLs.addAll(chapnames)
+                        filterLsList.addAll(filteredLsList)
                     }
                 }
             }
@@ -157,11 +156,15 @@ fun parseFileContents(contents: String): ParsedResults {
 
     cleanedContents = L.replace(cleanedContents,"")
 
+    val filteredLList = mutableListOf<FilteredLs>()
+    inTapLList.forEachIndexed { index, nxtTapL->
+        filteredLList.add(FilteredLs(inTapLList[index],chapNamesLList[index]))
+    }
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
-        val pr = ParsedResults(ParsedParts(cleanedContents,
-            calcit,FilteredLs(inTapLList,chapNamesLList)),null)
-        return pr
+       return ParsedResults(ParsedParts(cleanedContents,
+            calcit,filteredLList),null)
+
     } catch (ex: Exception) {
         return ParsedResults(null, ex.message)
     }
