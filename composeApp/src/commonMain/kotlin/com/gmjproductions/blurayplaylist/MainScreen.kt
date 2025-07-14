@@ -112,9 +112,7 @@ fun MainScreen() {
                             FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
 
                         // add els back
-                        it.llist[0].itemList.first {
-                            it.ID = "INTAP"
-                        }.
+
                         var result = XML.encodeToString<Calcit>(it)
 
                         println(result)
@@ -141,9 +139,14 @@ fun MainScreen() {
 fun parseFileContents(contents: String): Pair<Triple<String, Calcit, List<L2>>?, String?> {
     val E = "<E/>".toRegex()
     val L = "(<L>(.*)+</L>)".toRegex()
+    val inTapL = "<F ID=\"INTAP\">[\\n\\s]+(.*)[\\n\\s]+</F>".toRegex()
+
 
     var cleanedContents = E.replace(contents, "")
+    val inTapLList = inTapL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
+    println("inTapLList count: ${inTapLList?.count()}")
     var els = L.findAll(cleanedContents).map { it.value }.toList()
+
     var el2s = els.map { XML.decodeFromString<L2>(it) }
 
     cleanedContents = L.replace(cleanedContents,"")
