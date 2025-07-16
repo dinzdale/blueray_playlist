@@ -57,7 +57,7 @@ val uncrop =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 
 typealias ParsedResults = Pair<ParsedParts?,String?>
-typealias FilteredLs = Pair<String?,String?>
+typealias FilteredLs = Pair<String,String>
 typealias  ParsedParts = Triple<String,Calcit,List<FilteredLs>>
 
 @Composable
@@ -74,7 +74,7 @@ fun MainScreen() {
 
             var calcIt = remember { mutableStateOf<Calcit?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
-            var filterLsList = remember { mutableStateListOf<FilteredLs?>() }
+            var filterLsList = remember { mutableStateListOf<FilteredLs>() }
 
 
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
@@ -114,14 +114,21 @@ fun MainScreen() {
             }
             LaunchedEffect(showFileSaver) {
                 if (showFileSaver) {
-                    calcIt.value?.also {
+                    calcIt.value?.also { calcit->
 
                         val file =
                             FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
 
                         // add els back
-
-                        var result = XML.encodeToString<Calcit>(it)
+                        calcit.llist.forEachIndexed() { index, nxtLList->
+                            val (intapValue,chapNamesValue) = filterLsList[index]
+                            println("intapValue: $intapValue, chapNamesValue: $chapNamesValue")
+                            var nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "INTAP" }
+                            nxtLList.itemList[nxtGrpIndex].value = intapValue
+                            nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "CHAPNAMES" }
+                            nxtLList.itemList[nxtGrpIndex].value = chapNamesValue
+                        }
+                        var result = XML.encodeToString<Calcit>(calcit)
 
                         println(result)
                         result = "(</F>)+".toRegex().replace(result, "$1\n")
@@ -158,7 +165,7 @@ fun parseFileContents(contents: String): ParsedResults {
 
     val filteredLList = mutableListOf<FilteredLs>()
     inTapLList.forEachIndexed { index, nxtTapL->
-        filteredLList.add(FilteredLs(inTapLList[index],chapNamesLList[index]))
+        filteredLList.add(FilteredLs(inTapLList[index]?:"",chapNamesLList[index]?:""))
     }
     try {
         val calcit = XML.decodeFromString<Calcit>(cleanedContents)
