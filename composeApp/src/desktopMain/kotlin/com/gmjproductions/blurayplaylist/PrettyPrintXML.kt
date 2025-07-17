@@ -18,7 +18,7 @@ actual fun prettyPrintXml(xmlString: String, indent: Int): String {
         transformer.setOutputProperty(OutputKeys.INDENT, "yes")
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", indent.toString())
         // For standalone XML, you might want to omit the XML declaration
-        // transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
 
         transformer.transform(src, res)
         res.writer.toString()

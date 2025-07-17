@@ -36,9 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.gmjproductions.blurayplaylist.models.Calcit
-import com.gmjproductions.blurayplaylist.models.L2
-import com.gmjproductions.blurayplaylist.models.L3
+import com.gmjproductions.blurayplaylist.models.CALCIT
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
@@ -46,7 +44,6 @@ import io.github.vinceglb.filekit.absolutePath
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.name
-import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
 import nl.adaptivity.xmlutil.serialization.XML
@@ -58,7 +55,7 @@ val uncrop =
 
 typealias ParsedResults = Pair<ParsedParts?,String?>
 typealias FilteredLs = Pair<String,String>
-typealias  ParsedParts = Triple<String,Calcit,List<FilteredLs>>
+typealias  ParsedParts = Triple<String,CALCIT,List<FilteredLs>>
 
 @Composable
 fun MainScreen() {
@@ -72,7 +69,7 @@ fun MainScreen() {
 
             var showFileSaver by remember { mutableStateOf(false) }
 
-            var calcIt = remember { mutableStateOf<Calcit?>(null) }
+            var calcIt = remember { mutableStateOf<CALCIT?>(null) }
             var errorMessage by remember { mutableStateOf<String?>(null) }
             var filterLsList = remember { mutableStateListOf<FilteredLs>() }
 
@@ -128,9 +125,10 @@ fun MainScreen() {
                             nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "CHAPNAMES" }
                             nxtLList.itemList[nxtGrpIndex].value = chapNamesValue
                         }
-                        var result = XML.encodeToString<Calcit>(calcit)
+                        var result = XML.encodeToString<CALCIT>(calcit)
                         result = result.replace("*****","<E/>")
-                        result = prettyPrintXml(result,2)
+                        result = result.replace("^\\s*$","")
+                        result = prettyPrintXml(result,0)
                         println(result)
                         //result = "(</F>)+".toRegex().replace(result, "$1\n")
 
@@ -169,7 +167,7 @@ fun parseFileContents(contents: String): ParsedResults {
         filteredLList.add(FilteredLs(inTapLList[index]?:"",chapNamesLList[index]?:""))
     }
     try {
-        val calcit = XML.decodeFromString<Calcit>(cleanedContents)
+        val calcit = XML.decodeFromString<CALCIT>(cleanedContents)
        return ParsedResults(ParsedParts(cleanedContents,
             calcit,filteredLList),null)
 
@@ -214,7 +212,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 }
 
 @Composable
-fun ShowResults(calcit: MutableState<Calcit?>) {
+fun ShowResults(calcit: MutableState<CALCIT?>) {
     val lazyListState = rememberLazyListState()
 
 
