@@ -129,9 +129,10 @@ fun MainScreen() {
                             nxtLList.itemList[nxtGrpIndex].value = chapNamesValue
                         }
                         var result = XML.encodeToString<Calcit>(calcit)
-
+                        result = result.replace("*****","<E/>")
+                        result = prettyPrintXml(result,2)
                         println(result)
-                        result = "(</F>)+".toRegex().replace(result, "$1\n")
+                        //result = "(</F>)+".toRegex().replace(result, "$1\n")
 
                         //result = "(<F.*</F>)+".toRegex().replace(result,"$1*****")
 
@@ -157,7 +158,7 @@ fun parseFileContents(contents: String): ParsedResults {
     val inTapL = "<F ID=\"INTAP\">[\\n\\s]+(.*)[\\n\\s]+</F>".toRegex()
     val chapNamesL = "<F ID=\"CHAPNAMES\">[\\n\\s]+(.*)[\\n\\s]+<\\/F>".toRegex()
 
-    var cleanedContents = E.replace(contents, "")
+    var cleanedContents = E.replace(contents, "*****")
     val inTapLList = inTapL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
     val chapNamesLList = chapNamesL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
 
