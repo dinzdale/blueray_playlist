@@ -128,7 +128,7 @@ fun MainScreen() {
                         var result = XML.encodeToString<CALCIT>(calcit)
                         result = result.replace("*****","<E/>")
                         result = result.replace("^\\s*$","")
-                        result = prettyPrintXml(result,0)
+                        result = prettyPrintXml(result,2)
                         println(result)
                         //result = "(</F>)+".toRegex().replace(result, "$1\n")
 
