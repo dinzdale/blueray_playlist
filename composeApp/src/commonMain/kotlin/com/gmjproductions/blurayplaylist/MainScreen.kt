@@ -51,8 +51,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 val uncrop =
-    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|2895|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
-
+    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 typealias ParsedResults = Pair<ParsedParts?,String?>
 typealias FilteredLs = Pair<String,String>
 typealias  ParsedParts = Triple<String,CALCIT,List<FilteredLs>>
@@ -118,24 +117,22 @@ fun MainScreen() {
 
                         // add els back
                         calcit.llist.forEachIndexed() { index, nxtLList->
-                            val (intapValue,chapNamesValue) = filterLsList[index]
-                            println("intapValue: $intapValue, chapNamesValue: $chapNamesValue")
+                           // val (intapValue,chapNamesValue) = filterLsList[index]
                             var nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "INTAP" }
-                            nxtLList.itemList[nxtGrpIndex].value = intapValue
+                            nxtLList.itemList[nxtGrpIndex].value = "LLLLL${index}"
                             nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "CHAPNAMES" }
-                            nxtLList.itemList[nxtGrpIndex].value = chapNamesValue
+                            nxtLList.itemList[nxtGrpIndex].value = "CCCCC${index}"
                         }
                         var result = XML.encodeToString<CALCIT>(calcit)
                         result = result.replace("*****","<E/>")
-
                         result = result.replace("^\\s*$","")
-                        println("before pretty: $result")
+                        filterLsList.forEachIndexed { index, nxtEntry ->
+                            val (intapValue, chapNamesValue) = nxtEntry
+                            result = result.replace("LLLLL${index}",intapValue)
+                            result = result.replace("CCCCC${index}",chapNamesValue)
+                        }
                         //result = prettyPrintXml(result,2)
-                        //result = result.replace("/^\\s*(<(F) .*\\/>)\$/gm","$1</$2>")
                         println(result)
-                        //result = "(</F>)+".toRegex().replace(result, "$1\n")
-
-                        //result = "(<F.*</F>)+".toRegex().replace(result,"$1*****")
 
 
                         file?.writeString(result)
