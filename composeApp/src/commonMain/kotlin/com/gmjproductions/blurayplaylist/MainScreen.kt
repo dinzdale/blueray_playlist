@@ -81,7 +81,10 @@ fun MainScreen() {
                 }) {
                     showFileSaver = true
                 }
-                ShowResults(calcIt)
+                calcIt.value?.also {
+                    ShowResults(it)
+                }
+
             }
             LaunchedEffect(showFilePicker) {
                 if (showFilePicker) {
@@ -217,12 +220,10 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 }
 
 @Composable
-fun ShowResults(calcit: MutableState<CALCIT?>) {
+fun ShowResults(calcit: CALCIT) {
     val lazyListState = rememberLazyListState()
 
-    val calcit = calcit?.value
-
-    calcit?.llist?.also { llist ->
+    calcit.llist?.also { llist ->
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
             itemsIndexed(llist) { index, nxtList ->
                 nxtList.itemList.forEach { nxtmultiAVCHDItem->
