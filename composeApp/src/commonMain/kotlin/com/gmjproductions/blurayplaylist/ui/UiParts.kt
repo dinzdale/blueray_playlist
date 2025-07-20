@@ -1,8 +1,12 @@
 package com.gmjproductions.blurayplaylist.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -13,8 +17,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 
 
-
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,13 +38,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ActionButton(label: String, onHover: @Composable (() -> Unit)? = null, onClick: () -> Unit) {
-    var showHover by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val showHover by interactionSource.collectIsHoveredAsState()
 
-    Box(modifier = Modifier.wrapContentSize().pointerHoverIcon().pointerInput() {
-        showHover = true
-    }.onPointerEvent(PointerEventType.Exit) {
-        showHover = false
-    }) {
+    Box(modifier = Modifier.wrapContentSize()) {
         if (showHover) {
             onHover?.invoke()
         }
@@ -73,20 +75,29 @@ fun HintBox(text: String) {
 }
 
 @Composable
-fun ItemTextField(text: String,  width: Dp) {
+fun ItemTextField(text: String, width: Dp) {
 
     var value by remember { mutableStateOf(text) }
-    TextField(value, { value = it }, Modifier.background(color = Color.LightGray).width(width))
-
+    TextField(
+        value,
+        { value = it },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.LightGray,
+            textColor = Color.Black
+        ),
+        modifier = Modifier.width(width).wrapContentHeight()
+    )
 }
 
 
 @Composable
+@Preview
 fun PreviewItemTextField() {
     MaterialTheme {
-
-        Surface(Modifier.fillMaxSize()) {
-            ItemTextField("Initial value here", 100.dp)
+        Surface() {
+            Box(Modifier.fillMaxSize().background(Color.Yellow), contentAlignment = Alignment.CenterStart) {
+                ItemTextField("Initial value here", 200.dp)
+            }
         }
     }
 }
