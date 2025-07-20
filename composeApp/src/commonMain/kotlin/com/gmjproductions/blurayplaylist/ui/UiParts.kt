@@ -76,7 +76,6 @@ fun HintBox(text: String) {
 @Composable
 fun ItemUpdate(
     text: String,
-    width: Dp = 300.dp,
     onConvert: (String) -> String,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
@@ -96,7 +95,8 @@ fun ItemUpdate(
                 backgroundColor = Color.LightGray,
                 textColor = Color.Black
             ),
-            modifier = Modifier.width(width).wrapContentHeight()
+            modifier = Modifier.fillMaxWidth(.60f).wrapContentHeight(),
+            singleLine = true
         )
         Row(
             Modifier.wrapContentSize(),
@@ -131,7 +131,7 @@ fun PreviewItemUpdate() {
     MaterialTheme {
         Surface() {
             Box(Modifier.fillMaxWidth()) {
-                ItemUpdate("Initial value here", 400.dp, { "convert" }, { "undow" }, {},{"Global"})
+                ItemUpdate("Initial value here",  { "convert" }, { "undow" }, {},{"Global"})
             }
 
         }
