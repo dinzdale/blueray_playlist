@@ -46,7 +46,7 @@ fun ActionButton(label: String, onHover: @Composable (() -> Unit)? = null, onCli
         }
         Button(
             onClick = onClick,
-            modifier = Modifier.size(width = 50.dp, height = 50.dp)
+            modifier = Modifier.size(40.dp)
         ) {
             Text(text = label.first().toString())
         }
@@ -79,7 +79,8 @@ fun ItemUpdate(
     width: Dp,
     onConvert: (String) -> String,
     onUnDo: (String) -> String,
-    onSave: (String) -> Unit
+    onSave: (String) -> Unit,
+    onGlobalConvert: (String)->String
 ) {
 
     var value by remember { mutableStateOf(text) }
@@ -109,6 +110,16 @@ fun ItemUpdate(
             ActionButton("Undo conversion", onClick = {
                 value = onUnDo(value)
             })
+            Spacer(Modifier.width(2.dp))
+            ActionButton("Save conversion", onClick = {
+                onSave(value)
+            })
+            Spacer(Modifier.width(2.dp))
+            ActionButton("Global conversion", onClick = {
+                value = onGlobalConvert(value)
+            })
+            Spacer(Modifier.width(2.dp))
+
         }
     }
 }
@@ -120,7 +131,7 @@ fun PreviewItemUpdate() {
     MaterialTheme {
         Surface() {
             Box(Modifier.fillMaxWidth()) {
-                ItemUpdate("Initial value here", 200.dp, { "convert" }, { "undow" }, {})
+                ItemUpdate("Initial value here", 200.dp, { "convert" }, { "undow" }, {},{"Global"})
             }
 
         }
