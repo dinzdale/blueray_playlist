@@ -38,6 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.CALCIT
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
+import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
+import com.gmjproductions.blurayplaylist.ui.ItemUpdate
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
@@ -52,9 +54,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 val uncrop =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
-typealias ParsedResults = Pair<ParsedParts?,String?>
-typealias FilteredLs = Pair<String,String>
-typealias  ParsedParts = Triple<String,CALCIT,List<FilteredLs>>
+typealias ParsedResults = Pair<ParsedParts?, String?>
+typealias FilteredLs = Pair<String, String>
+typealias ParsedParts = Triple<String, CALCIT, List<FilteredLs>>
 
 @Composable
 fun MainScreen() {
@@ -110,30 +112,29 @@ fun MainScreen() {
             }
             LaunchedEffect(showFileSaver) {
                 if (showFileSaver) {
-                    calcIt.value?.also { calcit->
+                    calcIt.value?.also { calcit ->
 
                         val file =
                             FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
 
                         // add els back
-                        calcit.llist.forEachIndexed() { index, nxtLList->
-                           // val (intapValue,chapNamesValue) = filterLsList[index]
+                        calcit.llist.forEachIndexed() { index, nxtLList ->
+                            // val (intapValue,chapNamesValue) = filterLsList[index]
                             var nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "INTAP" }
                             nxtLList.itemList[nxtGrpIndex].value = "LLLLL${index}"
                             nxtGrpIndex = nxtLList.itemList.indexOfFirst { it.ID == "CHAPNAMES" }
                             nxtLList.itemList[nxtGrpIndex].value = "CCCCC${index}"
                         }
                         var result = XML.encodeToString<CALCIT>(calcit)
-                        result = result.replace("*****","<E/>")
-                        result = result.replace("^\\s*$","")
+                        result = result.replace("*****", "<E/>")
+                        result = result.replace("^\\s*$", "")
                         filterLsList.forEachIndexed { index, nxtEntry ->
                             val (intapValue, chapNamesValue) = nxtEntry
-                            result = result.replace("LLLLL${index}",intapValue)
-                            result = result.replace("CCCCC${index}",chapNamesValue)
+                            result = result.replace("LLLLL${index}", intapValue)
+                            result = result.replace("CCCCC${index}", chapNamesValue)
                         }
                         //result = prettyPrintXml(result,2)
                         println(result)
-
 
                         file?.writeString(result)
 
@@ -160,16 +161,20 @@ fun parseFileContents(contents: String): ParsedResults {
     val inTapLList = inTapL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
     val chapNamesLList = chapNamesL.findAll(cleanedContents).map { it.groups[1]?.value }.toList()
 
-    cleanedContents = L.replace(cleanedContents,"")
+    cleanedContents = L.replace(cleanedContents, "")
 
     val filteredLList = mutableListOf<FilteredLs>()
-    inTapLList.forEachIndexed { index, nxtTapL->
-        filteredLList.add(FilteredLs(inTapLList[index]?:"",chapNamesLList[index]?:""))
+    inTapLList.forEachIndexed { index, nxtTapL ->
+        filteredLList.add(FilteredLs(inTapLList[index] ?: "", chapNamesLList[index] ?: ""))
     }
     try {
         val calcit = XML.decodeFromString<CALCIT>(cleanedContents)
-       return ParsedResults(ParsedParts(cleanedContents,
-            calcit,filteredLList),null)
+        return ParsedResults(
+            ParsedParts(
+                cleanedContents,
+                calcit, filteredLList
+            ), null
+        )
 
     } catch (ex: Exception) {
         return ParsedResults(null, ex.message)
@@ -215,16 +220,29 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 fun ShowResults(calcit: MutableState<CALCIT?>) {
     val lazyListState = rememberLazyListState()
 
+    val calcit = calcit?.value
 
-    calcit?.value?.llist?.also { llist ->
+    calcit?.llist?.also { llist ->
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
             itemsIndexed(llist) { index, nxtList ->
                 var nxtmultiAVCHDItem = nxtList.itemList.filter { it.ID == "UNCROP" }.first()
 
-                MultiAVCHDItemRow(nxtmultiAVCHDItem) { newItem ->
-                    val indexItemToUpdate =
-                        calcit.value!!.llist[index].itemList.indexOf(nxtmultiAVCHDItem)
-                    calcit.value!!.llist[index].itemList[indexItemToUpdate].value = newItem.value
+//                MultiAVCHDItemRow(nxtmultiAVCHDItem) { newItem ->
+//                    val indexItemToUpdate =
+//                        calcit.value!!.llist[index].itemList.indexOf(nxtmultiAVCHDItem)
+//                    calcit.value!!.llist[index].itemList[indexItemToUpdate].value = newItem.value
+//                }
+                when (val item = MultiAVCHDItemsIDs.toItem(nxtmultiAVCHDItem.ID)) {
+                    MultiAVCHDItemsIDs.NAME -> {}
+                    MultiAVCHDItemsIDs.UNCROP -> {
+                        ItemUpdate(nxtmultiAVCHDItem.value, onConvert = {
+                            uncrop.value
+                        }, onUnDo = { "Undo entry" }, onSave = {
+                            calcit.updateItem(index, MultiAVCHDItemsIDs.UNCROP, it)
+                        }, onGlobalConvert = { "Global convert" })
+                    }
+
+                    null -> TODO()
                 }
 
 

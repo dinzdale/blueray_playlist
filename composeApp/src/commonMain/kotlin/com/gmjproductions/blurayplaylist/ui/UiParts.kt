@@ -51,7 +51,7 @@ fun ActionButton(label: String, onHover: @Composable (() -> Unit)? = null, onCli
             Text(text = label.first().toString())
         }
     }
-}width = 50.dp, height = 50.dp
+}
 
 @Composable
 @Preview
@@ -76,7 +76,7 @@ fun HintBox(text: String) {
 @Composable
 fun ItemUpdate(
     text: String,
-    width: Dp,
+    width: Dp = 300.dp,
     onConvert: (String) -> String,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
@@ -131,7 +131,7 @@ fun PreviewItemUpdate() {
     MaterialTheme {
         Surface() {
             Box(Modifier.fillMaxWidth()) {
-                ItemUpdate("Initial value here", 200.dp, { "convert" }, { "undow" }, {},{"Global"})
+                ItemUpdate("Initial value here", 400.dp, { "convert" }, { "undow" }, {},{"Global"})
             }
 
         }
