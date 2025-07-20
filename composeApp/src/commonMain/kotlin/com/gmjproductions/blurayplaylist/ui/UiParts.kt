@@ -3,10 +3,12 @@ package com.gmjproductions.blurayplaylist.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -18,7 +20,6 @@ import androidx.compose.material.Text
 
 
 import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,8 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -75,29 +74,56 @@ fun HintBox(text: String) {
 }
 
 @Composable
-fun ItemTextField(text: String, width: Dp) {
+fun ItemUpdate(
+    text: String,
+    width: Dp,
+    onConvert: (String) -> String,
+    onUnDo: (String) -> String,
+    onSave: (String) -> Unit
+) {
 
     var value by remember { mutableStateOf(text) }
-    TextField(
-        value,
-        { value = it },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.LightGray,
-            textColor = Color.Black
-        ),
-        modifier = Modifier.width(width).wrapContentHeight()
-    )
+    Row(
+        Modifier.fillMaxWidth().wrapContentHeight(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value,
+            { value = it },
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.LightGray,
+                textColor = Color.Black
+            ),
+            modifier = Modifier.width(width).wrapContentHeight()
+        )
+        Row(
+            Modifier.wrapContentSize(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ActionButton("Convert entry", onClick = {
+                value = onConvert(value)
+            })
+            Spacer(Modifier.width(2.dp))
+            ActionButton("Undo conversion", onClick = {
+                value = onUnDo(value)
+            })
+        }
+    }
 }
 
 
 @Composable
 @Preview
-fun PreviewItemTextField() {
+fun PreviewItemUpdate() {
     MaterialTheme {
         Surface() {
-            Box(Modifier.fillMaxSize().background(Color.Yellow), contentAlignment = Alignment.CenterStart) {
-                ItemTextField("Initial value here", 200.dp)
+            Box(Modifier.fillMaxWidth()) {
+                ItemUpdate("Initial value here", 200.dp, { "convert" }, { "undow" }, {})
             }
+
         }
     }
 }
+
