@@ -51,7 +51,7 @@ fun ActionButton(label: String, onHover: @Composable (() -> Unit)? = null, onCli
             Text(text = label.first().toString())
         }
     }
-}
+}width = 50.dp, height = 50.dp
 
 @Composable
 @Preview
