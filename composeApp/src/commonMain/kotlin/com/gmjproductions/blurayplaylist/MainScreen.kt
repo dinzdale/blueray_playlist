@@ -225,26 +225,32 @@ fun ShowResults(calcit: MutableState<CALCIT?>) {
     calcit?.llist?.also { llist ->
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
             itemsIndexed(llist) { index, nxtList ->
-                var nxtmultiAVCHDItem = nxtList.itemList.filter { it.ID == "UNCROP" }.first()
+                nxtList.itemList.forEach { nxtmultiAVCHDItem->
+                      when (val item = MultiAVCHDItemsIDs.toItem(nxtmultiAVCHDItem.ID)) {
+                        MultiAVCHDItemsIDs.NAME -> {
+                            ItemUpdate(
+                                nxtmultiAVCHDItem.value,
+                                onConvert = {
+                                    convertFilename(it)
+                                }, onUnDo = {
+                                    "Undo Entry"
+                                },
+                                onSave = {
+                                    calcit.updateItem(index, MultiAVCHDItemsIDs.NAME, it)
+                                }, { "Global Convert" })
+                        }
 
-//                MultiAVCHDItemRow(nxtmultiAVCHDItem) { newItem ->
-//                    val indexItemToUpdate =
-//                        calcit.value!!.llist[index].itemList.indexOf(nxtmultiAVCHDItem)
-//                    calcit.value!!.llist[index].itemList[indexItemToUpdate].value = newItem.value
-//                }
-                when (val item = MultiAVCHDItemsIDs.toItem(nxtmultiAVCHDItem.ID)) {
-                    MultiAVCHDItemsIDs.NAME -> {}
-                    MultiAVCHDItemsIDs.UNCROP -> {
-                        ItemUpdate(nxtmultiAVCHDItem.value, onConvert = {
-                            uncrop.value
-                        }, onUnDo = { "Undo entry" }, onSave = {
-                            calcit.updateItem(index, MultiAVCHDItemsIDs.UNCROP, it)
-                        }, onGlobalConvert = { "Global convert" })
+                        MultiAVCHDItemsIDs.UNCROP -> {
+                            ItemUpdate(nxtmultiAVCHDItem.value, onConvert = {
+                                uncrop.value
+                            }, onUnDo = { "Undo entry" }, onSave = {
+                                calcit.updateItem(index, MultiAVCHDItemsIDs.UNCROP, it)
+                            }, onGlobalConvert = { "Global convert" })
+                        }
+                        MultiAVCHDItemsIDs.IGNORE ->{}
+                        null -> TODO()
                     }
-
-                    null -> TODO()
                 }
-
 
             }
         }
@@ -303,6 +309,7 @@ fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
 
 }
 
+fun convertFilename(filename:String) = "^.* - (.*)\$".toRegex().replace(filename,"$1")
 @Composable
 @Preview
 fun PreviewMainScreen() {

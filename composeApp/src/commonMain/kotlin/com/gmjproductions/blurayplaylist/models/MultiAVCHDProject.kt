@@ -5,10 +5,10 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
 
 enum class MultiAVCHDItemsIDs(id: String) {
-    UNCROP("UNCROP"), NAME("NAME");
+    UNCROP("UNCROP"), NAME("NAME"), IGNORE("IGNORE");
 
     companion object {
-        fun toItem(id: String) = MultiAVCHDItemsIDs.values().find { it.name == id }
+        fun toItem(id: String) = MultiAVCHDItemsIDs.values().find { it.name == id } ?: IGNORE
 
     }
 }
