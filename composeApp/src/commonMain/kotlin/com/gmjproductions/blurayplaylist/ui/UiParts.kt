@@ -79,7 +79,7 @@ fun ItemUpdate(
     onConvert: (String) -> String,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
-    onGlobalConvert: (String)->String
+    onGlobalConvert: (String)->Unit
 ) {
 
     var value by remember { mutableStateOf(text) }
@@ -116,7 +116,7 @@ fun ItemUpdate(
             })
             Spacer(Modifier.width(2.dp))
             ActionButton("Global conversion", onClick = {
-                value = onGlobalConvert(value)
+               onGlobalConvert(value)
             })
             Spacer(Modifier.width(2.dp))
 

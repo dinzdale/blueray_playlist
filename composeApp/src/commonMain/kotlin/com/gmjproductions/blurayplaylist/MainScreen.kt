@@ -81,9 +81,8 @@ fun MainScreen() {
                 }) {
                     showFileSaver = true
                 }
-                calcIt.value?.also {
-                    ShowResults(it)
-                }
+
+                calcIt.value?.also { ShowResults(it) }
 
             }
             LaunchedEffect(showFilePicker) {
@@ -226,8 +225,8 @@ fun ShowResults(calcit: CALCIT) {
     calcit.llist?.also { llist ->
         LazyColumn(state = lazyListState, userScrollEnabled = true) {
             itemsIndexed(llist) { index, nxtList ->
-                nxtList.itemList.forEach { nxtmultiAVCHDItem->
-                      when (val item = MultiAVCHDItemsIDs.toItem(nxtmultiAVCHDItem.ID)) {
+                nxtList.itemList.forEach { nxtmultiAVCHDItem ->
+                    when (val item = MultiAVCHDItemsIDs.toItem(nxtmultiAVCHDItem.ID)) {
                         MultiAVCHDItemsIDs.NAME -> {
                             ItemUpdate(
                                 nxtmultiAVCHDItem.value,
@@ -238,7 +237,17 @@ fun ShowResults(calcit: CALCIT) {
                                 },
                                 onSave = {
                                     calcit.updateItem(index, MultiAVCHDItemsIDs.NAME, it)
-                                }, { "Global Convert" })
+                                }, {
+                                    val nameItemList =
+                                        llist.map { it.itemList.first { it.ID == MultiAVCHDItemsIDs.NAME.name } }
+                                    nameItemList.forEachIndexed { nxtIndex, nxtItem ->
+                                        calcit.updateItem(
+                                            nxtIndex,
+                                            MultiAVCHDItemsIDs.NAME,
+                                            convertFilename(nxtItem.value)
+                                        )
+                                    }
+                                })
                         }
 
                         MultiAVCHDItemsIDs.UNCROP -> {
@@ -248,7 +257,8 @@ fun ShowResults(calcit: CALCIT) {
                                 calcit.updateItem(index, MultiAVCHDItemsIDs.UNCROP, it)
                             }, onGlobalConvert = { "Global convert" })
                         }
-                        MultiAVCHDItemsIDs.IGNORE ->{}
+
+                        MultiAVCHDItemsIDs.IGNORE -> {}
                         null -> TODO()
                     }
                 }
@@ -310,7 +320,8 @@ fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {
 
 }
 
-fun convertFilename(filename:String) = "^.* - (.*)\$".toRegex().replace(filename,"$1")
+fun convertFilename(filename: String) = "^.* - (.*)\$".toRegex().replace(filename, "$1")
+
 @Composable
 @Preview
 fun PreviewMainScreen() {
