@@ -1,8 +1,10 @@
 package com.gmjproductions.blurayplaylist.models
 
+import androidx.compose.ui.util.fastMap
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import nl.adaptivity.xmlutil.serialization.XmlValue
+
 
 enum class MultiAVCHDItemsIDs(id: String) {
     UNCROP("UNCROP"), NAME("NAME"), IGNORE("IGNORE");
@@ -23,6 +25,16 @@ data class CALCIT(val llist: List<LList>) {
                 thisList[itemIndex].value = value
             }
         }
+    }
+
+    fun toMap() = llist.withIndex().associate { (index, value) ->
+        index to value.itemList.filter { it.ID == MultiAVCHDItemsIDs.NAME.name || it.ID == MultiAVCHDItemsIDs.UNCROP.name }
+            .associateTo(
+                mutableMapOf()
+            )
+            {
+                MultiAVCHDItemsIDs.toItem(it.ID) to it.value
+            }
     }
 }
 

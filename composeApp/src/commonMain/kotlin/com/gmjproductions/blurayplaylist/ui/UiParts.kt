@@ -76,7 +76,7 @@ fun HintBox(text: String) {
 @Composable
 fun ItemUpdate(
     text: String,
-    onConvert: (String) -> String,
+    onConvert: (String) -> Unit,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
     onGlobalConvert: (String)->Unit
@@ -104,7 +104,7 @@ fun ItemUpdate(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ActionButton("Convert entry", onClick = {
-                value = onConvert(value)
+                onConvert(value)
             })
             Spacer(Modifier.width(2.dp))
             ActionButton("Undo conversion", onClick = {

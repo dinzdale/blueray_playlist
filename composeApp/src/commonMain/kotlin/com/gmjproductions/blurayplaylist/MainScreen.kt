@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.CALCIT
+import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
@@ -221,52 +223,25 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 @Composable
 fun ShowResults(calcit: CALCIT) {
     val lazyListState = rememberLazyListState()
+    var map = remember { mutableStateOf(calcit.toMap()) }
 
-    calcit.llist?.also { llist ->
-        LazyColumn(state = lazyListState, userScrollEnabled = true) {
-            itemsIndexed(llist) { index, nxtList ->
-                nxtList.itemList.forEach { nxtmultiAVCHDItem ->
-                    when (val item = MultiAVCHDItemsIDs.toItem(nxtmultiAVCHDItem.ID)) {
-                        MultiAVCHDItemsIDs.NAME -> {
-                            ItemUpdate(
-                                nxtmultiAVCHDItem.value,
-                                onConvert = {
-                                    convertFilename(it)
-                                }, onUnDo = {
-                                    "Undo Entry"
-                                },
-                                onSave = {
-                                    calcit.updateItem(index, MultiAVCHDItemsIDs.NAME, it)
-                                }, {
-                                    val nameItemList =
-                                        llist.map { it.itemList.first { it.ID == MultiAVCHDItemsIDs.NAME.name } }
-                                    nameItemList.forEachIndexed { nxtIndex, nxtItem ->
-                                        calcit.updateItem(
-                                            nxtIndex,
-                                            MultiAVCHDItemsIDs.NAME,
-                                            convertFilename(nxtItem.value)
-                                        )
-                                    }
-                                })
-                        }
-
-                        MultiAVCHDItemsIDs.UNCROP -> {
-                            ItemUpdate(nxtmultiAVCHDItem.value, onConvert = {
-                                uncrop.value
-                            }, onUnDo = { "Undo entry" }, onSave = {
-                                calcit.updateItem(index, MultiAVCHDItemsIDs.UNCROP, it)
-                            }, onGlobalConvert = { "Global convert" })
-                        }
-
-                        MultiAVCHDItemsIDs.IGNORE -> {}
-                        null -> TODO()
-                    }
-                }
-
-            }
+    LazyColumn(state = lazyListState, userScrollEnabled = true) {
+        itemsIndexed(
+            map.value.values.toList(),
+            { index, item -> index }) { index: Int, item: MutableMap<MultiAVCHDItemsIDs, String> ->
+            ItemUpdate(item[MultiAVCHDItemsIDs.NAME]!!, onConvert = {
+                val newValue = convertFilename(it)
+                map.value[index]?.set(MultiAVCHDItemsIDs.NAME, convertFilename(it))
+            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
+            ItemUpdate(item[MultiAVCHDItemsIDs.UNCROP]!!, onConvert = {
+                map.value[index]?.set(MultiAVCHDItemsIDs.UNCROP, uncrop.value)
+            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
         }
+
     }
+
 }
+
 
 @Composable
 fun MultiAVCHDItemRow(multiAVCHDItem: MultiAVCHDItem, onUpdate: (MultiAVCHDItem) -> Unit) {
