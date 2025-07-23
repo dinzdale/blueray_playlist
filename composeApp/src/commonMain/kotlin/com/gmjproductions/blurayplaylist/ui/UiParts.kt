@@ -22,6 +22,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,6 +85,11 @@ fun ItemUpdate(
 ) {
 
     var value by remember { mutableStateOf(text) }
+
+   LaunchedEffect(text) {
+       value = text
+   }
+
     Row(
         Modifier.fillMaxWidth().wrapContentHeight(),
         horizontalArrangement = Arrangement.SpaceBetween,

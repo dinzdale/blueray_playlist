@@ -223,19 +223,21 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 @Composable
 fun ShowResults(calcit: CALCIT) {
     val lazyListState = rememberLazyListState()
-    var map = remember { mutableStateOf(calcit.toMap()) }
+
+    val  elements = remember { mutableStateListOf<HashMap<MultiAVCHDItemsIDs,String>>().addAll(calcit.toMap().values)}
+
 
     LazyColumn(state = lazyListState, userScrollEnabled = true) {
-        itemsIndexed(
-            map.value.values.toList(),
-            { index, item -> index }) { index: Int, item: MutableMap<MultiAVCHDItemsIDs, String> ->
-            ItemUpdate(item[MultiAVCHDItemsIDs.NAME]!!, onConvert = {
-                val newValue = convertFilename(it)
-                map.value[index]?.set(MultiAVCHDItemsIDs.NAME, convertFilename(it))
-            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
-            ItemUpdate(item[MultiAVCHDItemsIDs.UNCROP]!!, onConvert = {
-                map.value[index]?.set(MultiAVCHDItemsIDs.UNCROP, uncrop.value)
-            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
+        itemsIndexed(listState) { index, item->
+//
+//            ItemUpdate(simpleList[index], onConvert = {
+//
+//                simpleList[index] = convertFilename(item)
+//
+//            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
+//            ItemUpdate(simpleList[index], onConvert = {
+//                simpleList[index] = uncrop.value
+//            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
         }
 
     }
