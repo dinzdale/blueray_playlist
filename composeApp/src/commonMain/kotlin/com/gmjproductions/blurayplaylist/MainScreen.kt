@@ -241,15 +241,23 @@ fun ShowResults(calcit: CALCIT) {
                     item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
             }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {
                 theList.forEachIndexed { index, nxtItem ->
-                    nxtItem[MultiAVCHDItemsIDs.NAME] ?.also {
-                        theList[index][MultiAVCHDItemsIDs.NAME] = it.copy(value = convertFilename(it.value))
+                    nxtItem[MultiAVCHDItemsIDs.NAME]?.also {
+                        theList[index][MultiAVCHDItemsIDs.NAME] =
+                            it.copy(value = convertFilename(it.value))
                     }
                 }
             })
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
                 theList[index][MultiAVCHDItemsIDs.UNCROP] =
                     item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
-            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
+            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {
+                theList.forEachIndexed { index, nxtItem ->
+                    nxtItem[MultiAVCHDItemsIDs.UNCROP]?.also {
+                        theList[index][MultiAVCHDItemsIDs.UNCROP] =
+                            it.copy(value = uncrop.value)
+                    }
+                }
+            })
         }
 
     }
