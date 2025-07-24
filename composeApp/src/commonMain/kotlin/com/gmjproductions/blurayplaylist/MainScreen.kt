@@ -225,22 +225,30 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 fun ShowResults(calcit: CALCIT) {
     val lazyListState = rememberLazyListState()
 
-    val  theList = remember { mutableStateListOf<SnapshotStateMap<MultiAVCHDItemsIDs,MultiAVCHDItem>>().also {
-        it.addAll(calcit.asList())
-    }}
+    val theList = remember {
+        mutableStateListOf<SnapshotStateMap<MultiAVCHDItemsIDs, MultiAVCHDItem>>().also {
+            it.addAll(calcit.asList())
+        }
+    }
 
 
     LazyColumn(state = lazyListState, userScrollEnabled = true) {
 
-        itemsIndexed(theList) { index, item->
+        itemsIndexed(theList) { index, item ->
 
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.NAME]!!.value, onConvert = {
-                theList[index][MultiAVCHDItemsIDs.NAME] = theList[index][MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
+                theList[index][MultiAVCHDItemsIDs.NAME] =
+                    item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
             }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {
-
+                theList.forEachIndexed { index, nxtItem ->
+                    nxtItem[MultiAVCHDItemsIDs.NAME] ?.also {
+                        theList[index][MultiAVCHDItemsIDs.NAME] = it.copy(value = convertFilename(it.value))
+                    }
+                }
             })
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
-                theList[index][MultiAVCHDItemsIDs.UNCROP] = theList[index][MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
+                theList[index][MultiAVCHDItemsIDs.UNCROP] =
+                    item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
             }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
         }
 
