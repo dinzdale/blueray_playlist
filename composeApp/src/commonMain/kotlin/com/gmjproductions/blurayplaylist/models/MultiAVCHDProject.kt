@@ -34,7 +34,16 @@ data class CALCIT(val llist: List<LList>) {
                 mutableMapOf()
             )
             {
-                MultiAVCHDItemsIDs.toItem(it.ID) to it.value
+                MultiAVCHDItemsIDs.toItem(it.ID) to it
+            }
+    }
+    fun asList() = llist.map {  value ->
+        value.itemList.filter { it.ID == MultiAVCHDItemsIDs.NAME.name || it.ID == MultiAVCHDItemsIDs.UNCROP.name }
+            .associateTo(
+                mutableStateMapOf()
+            )
+            {
+                MultiAVCHDItemsIDs.toItem(it.ID) to it
             }
     }
 }

@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -224,20 +225,23 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 fun ShowResults(calcit: CALCIT) {
     val lazyListState = rememberLazyListState()
 
-    val  elements = remember { mutableStateListOf<HashMap<MultiAVCHDItemsIDs,String>>().addAll(calcit.toMap().values)}
+    val  theList = remember { mutableStateListOf<SnapshotStateMap<MultiAVCHDItemsIDs,MultiAVCHDItem>>().also {
+        it.addAll(calcit.asList())
+    }}
 
 
     LazyColumn(state = lazyListState, userScrollEnabled = true) {
-        itemsIndexed(listState) { index, item->
-//
-//            ItemUpdate(simpleList[index], onConvert = {
-//
-//                simpleList[index] = convertFilename(item)
-//
-//            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
-//            ItemUpdate(simpleList[index], onConvert = {
-//                simpleList[index] = uncrop.value
-//            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
+
+        itemsIndexed(theList) { index, item->
+
+            ItemUpdate(theList[index][MultiAVCHDItemsIDs.NAME]!!.value, onConvert = {
+                theList[index][MultiAVCHDItemsIDs.NAME] = theList[index][MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
+            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {
+
+            })
+            ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
+                theList[index][MultiAVCHDItemsIDs.UNCROP] = theList[index][MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
+            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {})
         }
 
     }
