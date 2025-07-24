@@ -85,8 +85,26 @@ fun MainScreen() {
                     showFileSaver = true
                 }
 
-                calcIt.value?.also { ShowResults(it) }
+                calcIt.value?.also {
+                    ShowResults(it) { theList ->
+                        theList.forEachIndexed { index, map ->
+                            calcIt.value?.also {
+                                it.updateItem(
+                                    index,
+                                    MultiAVCHDItemsIDs.NAME,
+                                    map[MultiAVCHDItemsIDs.NAME]!!.value
+                                )
+                                it.updateItem(
+                                    index,
+                                    MultiAVCHDItemsIDs.UNCROP,
+                                    map[MultiAVCHDItemsIDs.UNCROP]!!.value
+                                )
+                            }
+                        }
 
+                    }
+
+                }
             }
             LaunchedEffect(showFilePicker) {
                 if (showFilePicker) {
@@ -222,7 +240,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 }
 
 @Composable
-fun ShowResults(calcit: CALCIT) {
+fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHDItem>>) -> Unit) {
     val lazyListState = rememberLazyListState()
 
     val theList = remember {
@@ -239,7 +257,9 @@ fun ShowResults(calcit: CALCIT) {
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.NAME]!!.value, onConvert = {
                 theList[index][MultiAVCHDItemsIDs.NAME] =
                     item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
-            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {
+            }, onUnDo = { "undo" }, onSave = {
+                onSave(theList)
+            }, onGlobalConvert = {
                 theList.forEachIndexed { index, nxtItem ->
                     nxtItem[MultiAVCHDItemsIDs.NAME]?.also {
                         theList[index][MultiAVCHDItemsIDs.NAME] =
@@ -250,7 +270,9 @@ fun ShowResults(calcit: CALCIT) {
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
                 theList[index][MultiAVCHDItemsIDs.UNCROP] =
                     item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
-            }, onUnDo = { "undo" }, onSave = {}, onGlobalConvert = {
+            }, onUnDo = { "undo" }, onSave = {
+                onSave(theList)
+            }, onGlobalConvert = {
                 theList.forEachIndexed { index, nxtItem ->
                     nxtItem[MultiAVCHDItemsIDs.UNCROP]?.also {
                         theList[index][MultiAVCHDItemsIDs.UNCROP] =
