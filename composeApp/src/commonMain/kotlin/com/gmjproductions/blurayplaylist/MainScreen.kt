@@ -56,7 +56,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 val uncrop =
-    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
+   XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
+val uncrop1920x1280 =
+    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">" +
+            "3|23|0|52|1920x1080|1920x1080|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||" +
+            "</F>")
 typealias ParsedResults = Pair<ParsedParts?, String?>
 typealias FilteredLs = Pair<String, String>
 typealias ParsedParts = Triple<String, CALCIT, List<FilteredLs>>
@@ -271,6 +275,7 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                 theList[index][MultiAVCHDItemsIDs.UNCROP] =
                     item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
             }, onUnDo = { "undo" }, onSave = {
+                theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
                 onSave(theList)
             }, onGlobalConvert = {
                 theList.forEachIndexed { index, nxtItem ->
