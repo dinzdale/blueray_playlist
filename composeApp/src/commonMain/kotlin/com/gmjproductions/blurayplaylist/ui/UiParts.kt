@@ -130,19 +130,19 @@ fun ItemUpdate(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ActionButton("Convert entry", onClick = {
+            ActionButton("C","Convert title, applies regexp to title.", onClick = {
                 onConvert(value)
             })
             Spacer(Modifier.width(2.dp))
-            ActionButton("Undo conversion", onClick = {
+            ActionButton("U", "Undo manual text field changes.", onClick = {
                 value = onUnDo(value)
             })
             Spacer(Modifier.width(2.dp))
-            ActionButton("Save conversion", onClick = {
+            ActionButton("S", "Save updates for this entry.", onClick = {
                 onSave(value)
             })
             Spacer(Modifier.width(2.dp))
-            ActionButton("Global conversion", onClick = {
+            ActionButton("G","Global conversion. Apply conversion rule for all entries of this type.", onClick = {
                 onGlobalConvert(value)
             })
             Spacer(Modifier.width(2.dp))
