@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import blurayplaylist.composeapp.generated.resources.Res
 import com.gmjproductions.blurayplaylist.models.Playlist
+import com.gmjproductions.blurayplaylist.theme.AppTheme
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -25,7 +26,9 @@ import javax.xml.stream.XMLStreamReader
 @Composable
 @Preview
 fun App() {
-    MainScreen()
+    AppTheme {
+        MainScreen()
+    }
 }
 
 fun loadProjectDefault() {

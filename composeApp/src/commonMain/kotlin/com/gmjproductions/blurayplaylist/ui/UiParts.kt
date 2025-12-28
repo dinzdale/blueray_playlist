@@ -44,15 +44,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gmjproductions.blurayplaylist.theme.AppTheme
+import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
 import jdk.jfr.Enabled
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ActionButton(label: String, tooltipText:String, enabled: Boolean = true, onClick: () -> Unit) {
+fun ActionButton(label: String, tooltipText: String, enabled: Boolean = true, onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
     val showHover by interactionSource.collectIsHoveredAsState()
     TooltipBox(
@@ -68,11 +71,13 @@ fun ActionButton(label: String, tooltipText:String, enabled: Boolean = true, onC
         Button(
             enabled = enabled,
             onClick = onClick,
-            modifier = if (label.length > 1) {
-                Modifier.wrapContentSize()
-            } else {
-                Modifier.size(40.dp)
-            }
+            modifier =
+                if (label.length > 1) {
+                    Modifier.wrapContentSize()
+                } else {
+                    Modifier.size(40.dp)
+                }
+            
         ) {
             Text(text = label)
         }
@@ -82,7 +87,7 @@ fun ActionButton(label: String, tooltipText:String, enabled: Boolean = true, onC
 @Composable
 @Preview
 fun PreviewButton() {
-    MaterialTheme {
+    AppTheme {
         ActionButton("A", "I'm just a little black rain cloud") {
 
         }
@@ -94,11 +99,13 @@ fun PreviewButton() {
 
 @Composable
 fun HintBox(text: String) {
-    Box(
-        modifier = Modifier.width(80.dp).wrapContentHeight().background(Color.Black),
-        Alignment.Center
-    ) {
-        Text(text = text, color = Color.White)
+    AppTheme {
+        Box(
+            modifier = Modifier.width(80.dp).wrapContentHeight().background(Color.Black),
+            Alignment.Center
+        ) {
+            Text(text = text, color = Color.White)
+        }
     }
 }
 
@@ -137,7 +144,7 @@ fun ItemUpdate(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ActionButton("C","Convert title, applies regexp to title.", onClick = {
+            ActionButton("C", "Convert title, applies regexp to title.", onClick = {
                 onConvert(value)
             })
             Spacer(Modifier.width(2.dp))
@@ -149,9 +156,12 @@ fun ItemUpdate(
                 onSave(value)
             })
             Spacer(Modifier.width(2.dp))
-            ActionButton("G","Global conversion. Apply conversion rule for all entries of this type.", onClick = {
-                onGlobalConvert(value)
-            })
+            ActionButton(
+                "G",
+                "Global conversion. Apply conversion rule for all entries of this type.",
+                onClick = {
+                    onGlobalConvert(value)
+                })
             Spacer(Modifier.width(2.dp))
 
         }
