@@ -43,6 +43,7 @@ import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
+import com.gmjproductions.blurayplaylist.ui.resolutionSelections
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
@@ -240,6 +241,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             }
 
         }
+        resolutionSelections {  }
     }
 }
 
