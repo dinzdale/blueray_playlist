@@ -42,6 +42,7 @@ import com.gmjproductions.blurayplaylist.models.CALCIT
 import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
+import com.gmjproductions.blurayplaylist.ui.ActionButton
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
 import com.gmjproductions.blurayplaylist.ui.resolutionSelections
 import com.gmjproductions.blurayplaylist.ui.resolutions
@@ -59,7 +60,6 @@ import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-
 typealias ParsedResults = Pair<ParsedParts?, String?>
 typealias FilteredLs = Pair<String, String>
 typealias ParsedParts = Triple<String, CALCIT, List<FilteredLs>>
@@ -68,9 +68,11 @@ typealias ParsedParts = Triple<String, CALCIT, List<FilteredLs>>
 val uncrop1280X720 =
     XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
 val uncrop1920x1280 =
-    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">" +
-            "3|23|0|52|1920x1080|1920x1080|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||" +
-            "</F>")
+    XML.decodeFromString<MultiAVCHDItem>(
+        "<F ID=\"UNCROP\">" +
+                "3|23|0|52|1920x1080|1920x1080|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||" +
+                "</F>"
+    )
 
 
 val uncropResolutions: StateFlow<MultiAVCHDItem>
@@ -234,17 +236,14 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-
-            Button(onClick = onOpenFileClick) {
-                Text("Open File")
-            }
+            ActionButton("Open File", "Open MultiAVCHD project file to modify", onClick = onOpenFileClick)
             Spacer(Modifier.width(10.dp))
             Text(filePath ?: "")
         }
         resolutionSelections {
             when (it) {
-                resolutions[0]->uncropResolutions.tryEmit(uncrop1280X720)
-                resolutions[1]->uncropResolutions.tryEmit(uncrop1920x1280)
+                resolutions[0] -> uncropResolutions.tryEmit(uncrop1280X720)
+                resolutions[1] -> uncropResolutions.tryEmit(uncrop1920x1280)
             }
         }
         Row(
@@ -253,10 +252,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             horizontalArrangement = Arrangement.Start
         ) {
             Spacer(Modifier.width(10.dp))
-            Button(onClick = onSaveFile, enabled = filePath?.isNotBlank() ?: false) {
-                Text("Save")
-            }
-
+            ActionButton("Save","Save updated project file", filePath?.isNotBlank() ?: false, onSaveFile)
         }
     }
 }

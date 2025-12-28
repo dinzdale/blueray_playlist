@@ -47,27 +47,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import jdk.jfr.Enabled
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ActionButton(label: String, tooltipText:String, onClick: () -> Unit) {
+fun ActionButton(label: String, tooltipText:String, enabled: Boolean = true, onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
     val showHover by interactionSource.collectIsHoveredAsState()
     TooltipBox(
         modifier = Modifier.wrapContentSize(),
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
         tooltip = {
-            PlainTooltip {
-                Text(tooltipText)
+            PlainTooltip(containerColor = Color.DarkGray) {
+                Text(tooltipText, color = Color.White)
             }
         },
         state = rememberTooltipState()
     ) {
         Button(
-            onClick = onClick, modifier = Modifier.size(40.dp)
+            enabled = enabled,
+            onClick = onClick,
+            modifier = if (label.length > 1) {
+                Modifier.wrapContentSize()
+            } else {
+                Modifier.size(40.dp)
+            }
         ) {
-            Text(text = label.first().toString())
+            Text(text = label)
         }
     }
 }
