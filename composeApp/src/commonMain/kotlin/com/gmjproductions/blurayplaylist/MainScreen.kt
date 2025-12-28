@@ -53,22 +53,32 @@ import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-val uncrop =
-   XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
-val uncrop1920x1280 =
-    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">" +
-            "3|23|0|52|1920x1080|1920x1080|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||" +
-            "</F>")
+
 typealias ParsedResults = Pair<ParsedParts?, String?>
 typealias FilteredLs = Pair<String, String>
 typealias ParsedParts = Triple<String, CALCIT, List<FilteredLs>>
 
+// resolutions
+val uncrop1280X720 =
+    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">3|23|0|6|1280x720&#32;(No&#32;change)|1280x720|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||</F>")
+val uncrop1920x1280 =
+    XML.decodeFromString<MultiAVCHDItem>("<F ID=\"UNCROP\">" +
+            "3|23|0|52|1920x1080|1920x1080|14|0|3137|4|4|3|3|3|4|7|1|Original|1|80|2|1|0|||||||||||" +
+            "</F>")
+
+
+val uncropResolutions: StateFlow<MultiAVCHDItem>
+    field = MutableStateFlow<MultiAVCHDItem>(uncrop1280X720)
+
 @Composable
 fun MainScreen() {
+
     MaterialTheme {
         Surface(Modifier.fillMaxSize()) {
             var inputFile by remember { mutableStateOf<PlatformFile?>(null) }
@@ -231,7 +241,12 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             Spacer(Modifier.width(10.dp))
             Text(filePath ?: "")
         }
-        resolutionSelections {  }
+        resolutionSelections {
+            when (it) {
+                resolutions[0]->uncropResolutions.tryEmit(uncrop1280X720)
+                resolutions[1]->uncropResolutions.tryEmit(uncrop1920x1280)
+            }
+        }
         Row(
             Modifier.wrapContentSize().padding(start = 10.dp),
             verticalAlignment = Alignment.Bottom,
@@ -276,7 +291,7 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
             })
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
                 theList[index][MultiAVCHDItemsIDs.UNCROP] =
-                    item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncrop.value)
+                    item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncropResolutions.value.value)
             }, onUnDo = { "undo" }, onSave = {
                 theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
                 onSave(theList)
@@ -284,7 +299,7 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                 theList.forEachIndexed { index, nxtItem ->
                     nxtItem[MultiAVCHDItemsIDs.UNCROP]?.also {
                         theList[index][MultiAVCHDItemsIDs.UNCROP] =
-                            it.copy(value = uncrop.value)
+                            it.copy(value = uncropResolutions.value.value)
                     }
                 }
             })
@@ -306,7 +321,7 @@ fun MultiAVCHDItemRow(multiAVCHDItem: MultiAVCHDItem, onUpdate: (MultiAVCHDItem)
         Text(multiAVCHDItem.ID, Modifier.width(100.dp))
         TextField(text, { text = it })
         Button({
-            text = uncrop.value
+            text = uncropResolutions.value.value
         }) {
             Text("correct")
         }

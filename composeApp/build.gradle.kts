@@ -94,3 +94,22 @@ compose.desktop {
         }
     }
 }
+// ... existing imports
+
+kotlin {// Keep your existing compiler options
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
+    }
+
+    // Add this block to enable the feature for all source sets (Common, Android, Desktop, etc.)
+    sourceSets.all {
+        languageSettings.enableLanguageFeature("ExplicitBackingFields")
+    }
+
+    androidTarget {
+        // ... existing androidTarget config
+    }
+
+    // ... rest of the file
+}
