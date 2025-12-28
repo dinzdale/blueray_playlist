@@ -279,7 +279,9 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.NAME]!!.value, onConvert = {
                 theList[index][MultiAVCHDItemsIDs.NAME] =
                     item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
-            }, onUnDo = { "undo" }, onSave = {
+            }, onUnDo = {
+                theList[index][MultiAVCHDItemsIDs.NAME]?.value.toString()
+            }, onSave = {
                 onSave(theList)
             }, onGlobalConvert = {
                 theList.forEachIndexed { index, nxtItem ->
@@ -292,7 +294,9 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
             ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
                 theList[index][MultiAVCHDItemsIDs.UNCROP] =
                     item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncropResolutions.value.value)
-            }, onUnDo = { "undo" }, onSave = {
+            }, onUnDo = {
+                theList[index][MultiAVCHDItemsIDs.UNCROP]?.value.toString()
+            }, onSave = {
                 theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
                 onSave(theList)
             }, onGlobalConvert = {
