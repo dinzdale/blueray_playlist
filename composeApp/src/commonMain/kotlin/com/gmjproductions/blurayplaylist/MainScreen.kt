@@ -248,7 +248,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
         }
         Row(
             Modifier.wrapContentSize().padding(start = 10.dp),
-            verticalAlignment = Alignment.Bottom,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
             Spacer(Modifier.width(10.dp))
@@ -310,30 +310,30 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
 }
 
 
-@Composable
-fun MultiAVCHDItemRow(multiAVCHDItem: MultiAVCHDItem, onUpdate: (MultiAVCHDItem) -> Unit) {
-    var textFieldState = rememberTextFieldState(multiAVCHDItem.value)
-    var text by remember { mutableStateOf(multiAVCHDItem.value) }
-    Row(
-        Modifier.fillMaxWidth().wrapContentHeight(),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        Text(multiAVCHDItem.ID, Modifier.width(100.dp))
-        TextField(text, { text = it })
-        Button({
-            text = uncropResolutions.value.value
-        }) {
-            Text("correct")
-        }
-        Button({
-            onUpdate(MultiAVCHDItem(multiAVCHDItem.ID, text))
-        }) {
-            Text("save")
-        }
-
-    }
-
-}
+//@Composable
+//fun MultiAVCHDItemRow(multiAVCHDItem: MultiAVCHDItem, onUpdate: (MultiAVCHDItem) -> Unit) {
+//    var textFieldState = rememberTextFieldState(multiAVCHDItem.value)
+//    var text by remember { mutableStateOf(multiAVCHDItem.value) }
+//    Row(
+//        Modifier.fillMaxWidth().wrapContentHeight(),
+//        horizontalArrangement = Arrangement.SpaceAround
+//    ) {
+//        Text(multiAVCHDItem.ID, Modifier.width(100.dp))
+//        TextField(text, { text = it })
+//        Button({
+//            text = uncropResolutions.value.value
+//        }) {
+//            Text("correct")
+//        }
+//        Button({
+//            onUpdate(MultiAVCHDItem(multiAVCHDItem.ID, text))
+//        }) {
+//            Text("save")
+//        }
+//
+//    }
+//
+//}
 
 @Composable
 fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {

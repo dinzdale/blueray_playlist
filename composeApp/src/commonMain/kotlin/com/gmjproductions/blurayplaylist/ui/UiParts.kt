@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,26 +15,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.PlainTooltip
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,20 +41,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.theme.AppTheme
 import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
-import jdk.jfr.Enabled
+import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ActionButton(label: String, tooltipText: String, enabled: Boolean = true, onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
-    val showHover by interactionSource.collectIsHoveredAsState()
     TooltipBox(
         modifier = Modifier.wrapContentSize(),
         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
@@ -71,15 +67,15 @@ fun ActionButton(label: String, tooltipText: String, enabled: Boolean = true, on
         Button(
             enabled = enabled,
             onClick = onClick,
-            modifier =
-                if (label.length > 1) {
-                    Modifier.wrapContentSize()
-                } else {
-                    Modifier.size(40.dp)
-                }
-            
+            shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BlueRayPrimary,
+                contentColor = Color.White
+            ),
+            interactionSource = interactionSource,
+            modifier = Modifier.wrapContentWidth().height(40.dp)
         ) {
-            Text(text = label)
+            Text(modifier = Modifier.wrapContentSize().padding(2.dp), text = label, style = TextStyle(color = Color.White, textAlign = TextAlign.Left))
         }
     }
 }
@@ -104,7 +100,7 @@ fun HintBox(text: String) {
             modifier = Modifier.width(80.dp).wrapContentHeight().background(Color.Black),
             Alignment.Center
         ) {
-            Text(text = text, color = Color.White)
+            Text(text = text, modifier = Modifier.wrapContentSize(), color = Color.White)
         }
     }
 }
@@ -226,4 +222,3 @@ fun PreviewResolutionSelection() {
         }
     }
 }
-
