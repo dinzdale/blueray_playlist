@@ -44,6 +44,7 @@ import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
 import com.gmjproductions.blurayplaylist.ui.resolutionSelections
+import com.gmjproductions.blurayplaylist.ui.resolutions
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
@@ -230,6 +231,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             Spacer(Modifier.width(10.dp))
             Text(filePath ?: "")
         }
+        resolutionSelections {  }
         Row(
             Modifier.wrapContentSize().padding(start = 10.dp),
             verticalAlignment = Alignment.Bottom,
@@ -241,7 +243,6 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             }
 
         }
-        resolutionSelections {  }
     }
 }
 

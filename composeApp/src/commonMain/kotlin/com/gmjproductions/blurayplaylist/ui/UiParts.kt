@@ -137,29 +137,28 @@ fun ItemUpdate(
         }
     }
 }
-
+val resolutions = listOf("1280X720", "1920X1280")
 @Composable
 fun resolutionSelections(onSelection: (String) -> Unit) {
-    val options = listOf("1280X720", "1920X1280")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(options[0]) }
-    Row(Modifier.selectableGroup().wrapContentSize()) {
-        options.forEach { text ->
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(resolutions[0]) }
+    Row(Modifier.selectableGroup().wrapContentSize(), verticalAlignment = Alignment.CenterVertically) {
+        Text("uncrop resolutions:", Modifier.padding(start = 10.dp))
+        resolutions.forEach { text ->
             Row(
                 Modifier.wrapContentSize().height(56.dp).selectable(
                     selected = (text == selectedOption),
                     onClick = { onOptionSelected(text)
                                 onSelection(text) },
                     role = Role.RadioButton
-                ).padding(16.dp), verticalAlignment = Alignment.CenterVertically
+                ).padding(10.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
                     selected = (text == selectedOption),
-                    onClick = null,
-                    modifier = Modifier.padding(start = 16.dp)
+                    onClick = null
                 )
+                Spacer(Modifier.width(6.dp))
                 Text(
                     text = text,
-                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
         }
@@ -181,7 +180,7 @@ fun PreviewItemUpdate() {
 @Composable
 @Preview
 fun PreviewResolutionSelection() {
-    Surface(Modifier.fillMaxSize()) {
+    Surface(Modifier.wrapContentSize()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
             resolutionSelections {
                 print("Selected: $it")
