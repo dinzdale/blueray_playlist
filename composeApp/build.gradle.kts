@@ -31,6 +31,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -38,6 +39,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.xmlutilcore)
             implementation(libs.xmlutilserialization)
+
 
             implementation(libs.filekit.core)
             // Enables FileKit dialogs without Compose dependencies
@@ -100,9 +102,12 @@ kotlin {// Keep your existing compiler options
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.add("-Xexplicit-backing-fields")
+        freeCompilerArgs.add("-opt-in=androidx.compose.foundation.ExperimentalFoundationApi")
+        freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
     }
 
-    // Add this block to enable the feature for all source sets (Common, Android, Desktop, etc.)
+
+// Add this block to enable the feature for all source sets (Common, Android, Desktop, etc.)
     sourceSets.all {
         languageSettings.enableLanguageFeature("ExplicitBackingFields")
     }
@@ -111,5 +116,5 @@ kotlin {// Keep your existing compiler options
         // ... existing androidTarget config
     }
 
-    // ... rest of the file
+// ... rest of the file
 }

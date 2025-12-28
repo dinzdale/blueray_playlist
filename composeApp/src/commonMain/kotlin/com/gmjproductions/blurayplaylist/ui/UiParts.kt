@@ -24,9 +24,15 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 
-
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -45,17 +51,21 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ActionButton(label: String, onHover: @Composable (() -> Unit)? = null, onClick: () -> Unit) {
+fun ActionButton(label: String, tooltipText:String, onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
     val showHover by interactionSource.collectIsHoveredAsState()
-
-    Box(modifier = Modifier.wrapContentSize()) {
-        if (showHover) {
-            onHover?.invoke()
-        }
+    TooltipBox(
+        modifier = Modifier.wrapContentSize(),
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = {
+            PlainTooltip {
+                Text(tooltipText)
+            }
+        },
+        state = rememberTooltipState()
+    ) {
         Button(
-            onClick = onClick,
-            modifier = Modifier.size(40.dp)
+            onClick = onClick, modifier = Modifier.size(40.dp)
         ) {
             Text(text = label.first().toString())
         }
@@ -66,11 +76,14 @@ fun ActionButton(label: String, onHover: @Composable (() -> Unit)? = null, onCli
 @Preview
 fun PreviewButton() {
     MaterialTheme {
-        ActionButton("A", { HintBox("Apply conversion") }) {
+        ActionButton("A", "I'm just a little black rain cloud") {
 
         }
     }
 }
+
+// Remove or update other material (M2) imports if you migrate icons/buttons too
+
 
 @Composable
 fun HintBox(text: String) {
@@ -88,14 +101,14 @@ fun ItemUpdate(
     onConvert: (String) -> Unit,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
-    onGlobalConvert: (String)->Unit
+    onGlobalConvert: (String) -> Unit
 ) {
 
     var value by remember { mutableStateOf(text) }
 
-   LaunchedEffect(text) {
-       value = text
-   }
+    LaunchedEffect(text) {
+        value = text
+    }
 
     Row(
         Modifier.fillMaxWidth().wrapContentHeight(),
@@ -130,25 +143,32 @@ fun ItemUpdate(
             })
             Spacer(Modifier.width(2.dp))
             ActionButton("Global conversion", onClick = {
-               onGlobalConvert(value)
+                onGlobalConvert(value)
             })
             Spacer(Modifier.width(2.dp))
 
         }
     }
 }
+
 val resolutions = listOf("1280X720", "1920X1280")
+
 @Composable
 fun resolutionSelections(onSelection: (String) -> Unit) {
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(resolutions[0]) }
-    Row(Modifier.selectableGroup().wrapContentSize(), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier.selectableGroup().wrapContentSize(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text("uncrop resolutions:", Modifier.padding(start = 10.dp))
         resolutions.forEach { text ->
             Row(
                 Modifier.wrapContentSize().height(56.dp).selectable(
                     selected = (text == selectedOption),
-                    onClick = { onOptionSelected(text)
-                                onSelection(text) },
+                    onClick = {
+                        onOptionSelected(text)
+                        onSelection(text)
+                    },
                     role = Role.RadioButton
                 ).padding(10.dp), verticalAlignment = Alignment.CenterVertically
             ) {
@@ -171,12 +191,13 @@ fun PreviewItemUpdate() {
     MaterialTheme {
         Surface() {
             Box(Modifier.fillMaxWidth()) {
-                ItemUpdate("Initial value here",  { "convert" }, { "undow" }, {},{"Global"})
+                ItemUpdate("Initial value here", { "convert" }, { "undow" }, {}, { "Global" })
             }
 
         }
     }
 }
+
 @Composable
 @Preview
 fun PreviewResolutionSelection() {
