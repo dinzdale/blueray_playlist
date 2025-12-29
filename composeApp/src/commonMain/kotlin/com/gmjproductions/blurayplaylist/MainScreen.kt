@@ -243,7 +243,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
                 true
             })
             Spacer(Modifier.width(10.dp))
-            Text(filePath ?: "")
+            Text(filePath ?: "", style = TextStyle(color = Color.White))
         }
         resolutionSelections {
             when (it) {
