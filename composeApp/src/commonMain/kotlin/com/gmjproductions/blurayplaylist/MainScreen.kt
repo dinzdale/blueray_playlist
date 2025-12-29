@@ -42,6 +42,7 @@ import com.gmjproductions.blurayplaylist.models.CALCIT
 import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
+import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
 import com.gmjproductions.blurayplaylist.ui.ActionButton
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
 import com.gmjproductions.blurayplaylist.ui.resolutionSelections
@@ -228,7 +229,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 
 
     Column(
-        Modifier.fillMaxWidth().wrapContentHeight().background(color = Color.Yellow).height(150.dp),
+        Modifier.fillMaxWidth().wrapContentHeight().background(color = BlueRaySecondary).height(150.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
         Row(
@@ -236,7 +237,10 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            ActionButton("Open File", "Open MultiAVCHD project file to modify", onClick = onOpenFileClick)
+            ActionButton("Open File", "Open MultiAVCHD project file to modify", onClick = {
+                onOpenFileClick()
+                true
+            })
             Spacer(Modifier.width(10.dp))
             Text(filePath ?: "")
         }
@@ -252,7 +256,15 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             horizontalArrangement = Arrangement.Start
         ) {
             Spacer(Modifier.width(10.dp))
-            ActionButton("Save","Save updated project file", filePath?.isNotBlank() ?: false, onSaveFile)
+            ActionButton(
+                "Save",
+                "Save updated project file",
+                filePath?.isNotBlank() ?: false,
+                {
+                    onSaveFile()
+                    true
+                }
+            )
         }
     }
 }
@@ -309,31 +321,6 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
 
 }
 
-
-//@Composable
-//fun MultiAVCHDItemRow(multiAVCHDItem: MultiAVCHDItem, onUpdate: (MultiAVCHDItem) -> Unit) {
-//    var textFieldState = rememberTextFieldState(multiAVCHDItem.value)
-//    var text by remember { mutableStateOf(multiAVCHDItem.value) }
-//    Row(
-//        Modifier.fillMaxWidth().wrapContentHeight(),
-//        horizontalArrangement = Arrangement.SpaceAround
-//    ) {
-//        Text(multiAVCHDItem.ID, Modifier.width(100.dp))
-//        TextField(text, { text = it })
-//        Button({
-//            text = uncropResolutions.value.value
-//        }) {
-//            Text("correct")
-//        }
-//        Button({
-//            onUpdate(MultiAVCHDItem(multiAVCHDItem.ID, text))
-//        }) {
-//            Text("save")
-//        }
-//
-//    }
-//
-//}
 
 @Composable
 fun showAlert(message: String?, onExit: () -> Unit, onConfirm: () -> Unit) {

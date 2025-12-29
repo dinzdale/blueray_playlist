@@ -48,11 +48,19 @@ import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.theme.AppTheme
 import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
 import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
+import com.gmjproductions.blurayplaylist.theme.BlueRaySelected
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ActionButton(label: String, tooltipText: String, enabled: Boolean = true, onClick: () -> Unit) {
+fun ActionButton(
+    label: String,
+    tooltipText: String,
+    enabled: Boolean = true,
+    onClick: () -> Boolean
+) {
+    var containerColor by remember { mutableStateOf(BlueRayPrimary) }
+
     val interactionSource = remember { MutableInteractionSource() }
     TooltipBox(
         modifier = Modifier.wrapContentSize(),
@@ -66,16 +74,26 @@ fun ActionButton(label: String, tooltipText: String, enabled: Boolean = true, on
     ) {
         Button(
             enabled = enabled,
-            onClick = onClick,
+            onClick = {
+                if (onClick()) {
+                    containerColor = BlueRaySelected
+                } else {
+                    containerColor = BlueRayPrimary
+                }
+            },
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BlueRayPrimary,
+                containerColor = containerColor,
                 contentColor = Color.White
             ),
             interactionSource = interactionSource,
             modifier = Modifier.wrapContentWidth().height(40.dp)
         ) {
-            Text(modifier = Modifier.wrapContentSize().padding(2.dp), text = label, style = TextStyle(color = Color.White, textAlign = TextAlign.Left))
+            Text(
+                modifier = Modifier.wrapContentSize().padding(2.dp),
+                text = label,
+                style = TextStyle(color = Color.White, textAlign = TextAlign.Left)
+            )
         }
     }
 }
@@ -85,7 +103,7 @@ fun ActionButton(label: String, tooltipText: String, enabled: Boolean = true, on
 fun PreviewButton() {
     AppTheme {
         ActionButton("A", "I'm just a little black rain cloud") {
-
+            true
         }
     }
 }
@@ -142,14 +160,17 @@ fun ItemUpdate(
         ) {
             ActionButton("C", "Convert title, applies regexp to title.", onClick = {
                 onConvert(value)
+                true
             })
             Spacer(Modifier.width(2.dp))
             ActionButton("U", "Undo manual text field changes.", onClick = {
                 value = onUnDo(value)
+                false
             })
             Spacer(Modifier.width(2.dp))
             ActionButton("S", "Save updates for this entry.", onClick = {
                 onSave(value)
+                true
             })
             Spacer(Modifier.width(2.dp))
             ActionButton(
@@ -157,6 +178,7 @@ fun ItemUpdate(
                 "Global conversion. Apply conversion rule for all entries of this type.",
                 onClick = {
                     onGlobalConvert(value)
+                    true
                 })
             Spacer(Modifier.width(2.dp))
 

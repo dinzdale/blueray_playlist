@@ -9,6 +9,9 @@ val BlueRayPrimary = Color(0xFF007FFF)
 val BlueRaySecondary = Color(0xFF625b71)
 val BlueRayBackground = Color(0xFFF0F0F0)
 
+val BlueRaySelected = Color(0xAA00FF00)
+
+
 // Add your other colors here...
 val LightColorScheme = lightColorScheme(
     primary = BlueRayPrimary,
