@@ -230,7 +230,8 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 
 
     Column(
-        Modifier.fillMaxWidth().wrapContentHeight().background(color = BlueRayBackground).height(150.dp),
+        Modifier.fillMaxWidth().wrapContentHeight().background(color = BlueRayBackground)
+            .height(150.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
         Row(
@@ -238,10 +239,9 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            ActionButton("Open File", "Open MultiAVCHD project file to modify", onClick = {
-                onOpenFileClick()
-                true
-            })
+            ActionButton(
+                "Open File", "Open MultiAVCHD project file to modify", onClick = onOpenFileClick
+            )
             Spacer(Modifier.width(10.dp))
             Text(filePath ?: "", style = TextStyle(color = Color.White))
         }
@@ -261,10 +261,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
                 "Save",
                 "Save updated project file",
                 filePath?.isNotBlank() ?: false,
-                {
-                    onSaveFile()
-                    true
-                }
+                onSaveFile
             )
         }
     }

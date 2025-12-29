@@ -58,10 +58,8 @@ fun ActionButton(
     label: String,
     tooltipText: String,
     enabled: Boolean = true,
-    onClick: () -> Boolean
+    onClick: () -> Unit
 ) {
-    var containerColor by remember { mutableStateOf(BlueRayPrimary) }
-
     val interactionSource = remember { MutableInteractionSource() }
     TooltipBox(
         modifier = Modifier.wrapContentSize(),
@@ -75,16 +73,10 @@ fun ActionButton(
     ) {
         Button(
             enabled = enabled,
-            onClick = {
-                if (onClick()) {
-                    containerColor = BlueRaySelected
-                } else {
-                    containerColor = BlueRayPrimary
-                }
-            },
+            onClick = onClick,
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = containerColor,
+                containerColor = BlueRayPrimary,
                 contentColor = Color.White
             ),
             interactionSource = interactionSource,
@@ -104,7 +96,6 @@ fun ActionButton(
 fun PreviewButton() {
     AppTheme {
         ActionButton("A", "I'm just a little black rain cloud") {
-            true
         }
     }
 }
@@ -159,28 +150,22 @@ fun ItemUpdate(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ActionButton("C", "Convert title, applies regexp to title.", onClick = {
-                onConvert(value)
-                true
-            })
+            ActionButton(
+                "C", "Convert title, applies regexp to title.", onClick =
+                    { onConvert(value) }
+            )
             Spacer(Modifier.width(2.dp))
             ActionButton("U", "Undo manual text field changes.", onClick = {
                 value = onUnDo(value)
-                false
             })
             Spacer(Modifier.width(2.dp))
-            ActionButton("S", "Save updates for this entry.", onClick = {
-                onSave(value)
-                true
-            })
+            ActionButton("S", "Save updates for this entry.", onClick = { onSave(value) })
             Spacer(Modifier.width(2.dp))
             ActionButton(
                 "G",
                 "Global conversion. Apply conversion rule for all entries of this type.",
-                onClick = {
-                    onGlobalConvert(value)
-                    true
-                })
+                onClick = { onGlobalConvert(value) }
+            )
             Spacer(Modifier.width(2.dp))
 
         }
@@ -196,7 +181,11 @@ fun resolutionSelections(onSelection: (String) -> Unit) {
         Modifier.selectableGroup().wrapContentSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("uncrop resolutions:", Modifier.padding(start = 10.dp), style = TextStyle(color = Color.White))
+        Text(
+            "uncrop resolutions:",
+            Modifier.padding(start = 10.dp),
+            style = TextStyle(color = Color.White)
+        )
         resolutions.forEach { text ->
             Row(
                 Modifier.wrapContentSize().height(56.dp).selectable(
@@ -239,7 +228,10 @@ fun PreviewItemUpdate() {
 @Preview
 fun PreviewResolutionSelection() {
     Surface(Modifier.wrapContentSize()) {
-        Box(Modifier.wrapContentSize().background(BlueRayBackground), contentAlignment = Alignment.TopStart) {
+        Box(
+            Modifier.wrapContentSize().background(BlueRayBackground),
+            contentAlignment = Alignment.TopStart
+        ) {
             resolutionSelections {
                 print("Selected: $it")
             }
