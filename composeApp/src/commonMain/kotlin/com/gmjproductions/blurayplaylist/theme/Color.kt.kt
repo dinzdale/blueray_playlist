@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 
 val BlueRayPrimary = Color(0xFF007FFF)
 val BlueRaySecondary = Color(0xFF625b71)
-val BlueRayBackground = Color(0xFFF0F0F0)
+val BlueRayBackground = Color(0xAA000000)
 
 val BlueRaySelected = Color(0xAA00FF00)
 

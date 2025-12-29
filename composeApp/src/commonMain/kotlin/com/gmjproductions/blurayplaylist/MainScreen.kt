@@ -42,6 +42,7 @@ import com.gmjproductions.blurayplaylist.models.CALCIT
 import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
+import com.gmjproductions.blurayplaylist.theme.BlueRayBackground
 import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
 import com.gmjproductions.blurayplaylist.ui.ActionButton
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
@@ -229,7 +230,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
 
 
     Column(
-        Modifier.fillMaxWidth().wrapContentHeight().background(color = BlueRaySecondary).height(150.dp),
+        Modifier.fillMaxWidth().wrapContentHeight().background(color = BlueRayBackground).height(150.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
         Row(

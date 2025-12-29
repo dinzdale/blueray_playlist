@@ -46,6 +46,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.theme.AppTheme
+import com.gmjproductions.blurayplaylist.theme.BlueRayBackground
 import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
 import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
 import com.gmjproductions.blurayplaylist.theme.BlueRaySelected
@@ -195,7 +196,7 @@ fun resolutionSelections(onSelection: (String) -> Unit) {
         Modifier.selectableGroup().wrapContentSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("uncrop resolutions:", Modifier.padding(start = 10.dp))
+        Text("uncrop resolutions:", Modifier.padding(start = 10.dp), style = TextStyle(color = Color.White))
         resolutions.forEach { text ->
             Row(
                 Modifier.wrapContentSize().height(56.dp).selectable(
@@ -214,6 +215,7 @@ fun resolutionSelections(onSelection: (String) -> Unit) {
                 Spacer(Modifier.width(6.dp))
                 Text(
                     text = text,
+                    style = TextStyle(color = Color.White)
                 )
             }
         }
@@ -237,7 +239,7 @@ fun PreviewItemUpdate() {
 @Preview
 fun PreviewResolutionSelection() {
     Surface(Modifier.wrapContentSize()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
+        Box(Modifier.wrapContentSize().background(BlueRayBackground), contentAlignment = Alignment.TopStart) {
             resolutionSelections {
                 print("Selected: $it")
             }
