@@ -2,21 +2,17 @@ package com.gmjproductions.blurayplaylist.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.layout.getDefaultLazyLayoutKey
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,8 +45,6 @@ import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.theme.AppTheme
 import com.gmjproductions.blurayplaylist.theme.BlueRayBackground
 import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
-import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
-import com.gmjproductions.blurayplaylist.theme.BlueRaySelected
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -120,7 +114,8 @@ fun HintBox(text: String) {
 @Composable
 fun ItemUpdate(
     text: String,
-    globalSelectedColor: Color = BlueRayPrimary,
+    globalConvertSelectedColor: Color = BlueRayPrimary,
+    globalSaveSelectedColor: Color = BlueRayPrimary,
     onConvert: (String) -> Unit,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
@@ -162,12 +157,12 @@ fun ItemUpdate(
                 value = onUnDo(value)
             })
             Spacer(Modifier.width(2.dp))
-            ActionButton("S", "Save updates for this entry.", onClick = { onSave(value) })
+            ActionButton("S", "Save updates for this entry.", containerColor = globalSaveSelectedColor, onClick = { onSave(value) })
             Spacer(Modifier.width(2.dp))
             ActionButton(
                 "G",
                 "Global conversion. Apply conversion rule for all entries of this type.",
-                containerColor = globalSelectedColor,
+                containerColor = globalConvertSelectedColor,
                 onClick = { onGlobalConvert(value) }
             )
             Spacer(Modifier.width(2.dp))
@@ -223,6 +218,7 @@ fun PreviewItemUpdate() {
             Box(Modifier.fillMaxWidth()) {
                 ItemUpdate(
                     "Initial value here",
+                    BlueRayPrimary,
                     BlueRayPrimary,
                     { "convert" },
                     { "undow" },

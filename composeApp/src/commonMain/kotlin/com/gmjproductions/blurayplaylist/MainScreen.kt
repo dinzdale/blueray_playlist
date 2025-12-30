@@ -15,19 +15,15 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,12 +35,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gmjproductions.blurayplaylist.models.CALCIT
-import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
 import com.gmjproductions.blurayplaylist.theme.BlueRayBackground
 import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
-import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
 import com.gmjproductions.blurayplaylist.theme.BlueRaySelected
 import com.gmjproductions.blurayplaylist.ui.ActionButton
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
@@ -279,7 +273,9 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
         }
     }
 
-    var globalContainerColor = remember { mutableStateListOf(BlueRayPrimary,BlueRayPrimary) }
+    var globalConvertContainerColor = remember { mutableStateListOf(BlueRayPrimary,BlueRayPrimary) }
+    var globalSaveContainerColor = remember { mutableStateListOf(BlueRayPrimary,BlueRayPrimary) }
+
 
 
     LazyColumn(state = lazyListState, userScrollEnabled = true) {
@@ -288,7 +284,8 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
 
             ItemUpdate(
                 text = theList[index][MultiAVCHDItemsIDs.NAME]!!.value,
-                globalContainerColor[0],
+                globalConvertContainerColor[0],
+                globalSaveContainerColor[0],
                 onConvert = {
                     theList[index][MultiAVCHDItemsIDs.NAME] =
                         item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
@@ -298,9 +295,10 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                 },
                 onSave = {
                     onSave(theList)
+                    globalSaveContainerColor[0] = BlueRaySelected
                 },
                 onGlobalConvert = {
-                    globalContainerColor[0] = BlueRaySelected
+                    globalConvertContainerColor[0] = BlueRaySelected
                     theList.forEachIndexed { index, nxtItem ->
                         nxtItem[MultiAVCHDItemsIDs.NAME]?.also {
                             theList[index][MultiAVCHDItemsIDs.NAME] =
@@ -310,7 +308,8 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                 })
             ItemUpdate(
                 theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value,
-                globalSelectedColor = globalContainerColor[1],
+                globalConvertSelectedColor = globalConvertContainerColor[1],
+                globalSaveSelectedColor = globalSaveContainerColor[1],
                 onConvert = {
                     theList[index][MultiAVCHDItemsIDs.UNCROP] =
                         item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncropResolutions.value.value)
@@ -319,8 +318,9 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                 }, onSave = {
                     theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
                     onSave(theList)
+                    globalSaveContainerColor[1] = BlueRaySelected
                 }, onGlobalConvert = {
-                    globalContainerColor[1] = BlueRaySelected
+                    globalConvertContainerColor[1] = BlueRaySelected
                     theList.forEachIndexed { index, nxtItem ->
                         nxtItem[MultiAVCHDItemsIDs.UNCROP]?.also {
                             theList[index][MultiAVCHDItemsIDs.UNCROP] =
