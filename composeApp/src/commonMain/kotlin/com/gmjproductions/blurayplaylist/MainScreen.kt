@@ -44,6 +44,7 @@ import com.gmjproductions.blurayplaylist.ui.ActionButton
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
 import com.gmjproductions.blurayplaylist.ui.resolutionSelections
 import com.gmjproductions.blurayplaylist.ui.resolutions
+import com.sun.tools.javac.code.TypeAnnotationPosition.field
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
@@ -54,6 +55,7 @@ import io.github.vinceglb.filekit.readString
 import io.github.vinceglb.filekit.writeString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.compose
 import nl.adaptivity.xmlutil.serialization.XML
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -76,6 +78,7 @@ val uncrop1920x1280 =
 val uncropResolutions: StateFlow<MultiAVCHDItem>
     field = MutableStateFlow<MultiAVCHDItem>(uncrop1280X720)
 
+
 @Composable
 fun MainScreen() {
 
@@ -89,7 +92,9 @@ fun MainScreen() {
 
             var showFileSaver by remember { mutableStateOf(false) }
 
-            var calcIt = remember { mutableStateOf<CALCIT?>(null) }
+            var calcIt by remember { mutableStateOf<CALCIT?>(null) }
+
+
             var errorMessage by remember { mutableStateOf<String?>(null) }
             var filterLsList = remember { mutableStateListOf<FilteredLs>() }
 
@@ -101,10 +106,11 @@ fun MainScreen() {
                     showFileSaver = true
                 }
 
-                calcIt.value?.also {
+
+                calcIt?.also {
                     ShowResults(it) { theList ->
                         theList.forEachIndexed { index, map ->
-                            calcIt.value?.also {
+                            calcIt?.also {
                                 it.updateItem(
                                     index,
                                     MultiAVCHDItemsIDs.NAME,
@@ -124,6 +130,7 @@ fun MainScreen() {
             }
             LaunchedEffect(showFilePicker) {
                 if (showFilePicker) {
+                    calcIt = null
                     contents = null
                     val file = FileKit.openFilePicker()
                     file?.also {
@@ -144,7 +151,7 @@ fun MainScreen() {
                     errorMessage = message
                     parsedParts?.also {
                         val (parsedContentS, calcit, filteredLsList) = it
-                        calcIt.value = calcit
+                        calcIt = calcit
                         parsedContents = parsedContentS
                         filterLsList.addAll(filteredLsList)
                     }
@@ -152,7 +159,7 @@ fun MainScreen() {
             }
             LaunchedEffect(showFileSaver) {
                 if (showFileSaver) {
-                    calcIt.value?.also { calcit ->
+                    calcIt?.also { calcit ->
 
                         val file =
                             FileKit.openFileSaver(inputFile?.name ?: "", directory = inputFile)
