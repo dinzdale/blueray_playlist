@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.layout.getDefaultLazyLayoutKey
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,6 +59,7 @@ fun ActionButton(
     label: String,
     tooltipText: String,
     enabled: Boolean = true,
+    containerColor: Color = BlueRayPrimary,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -76,7 +78,7 @@ fun ActionButton(
             onClick = onClick,
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BlueRayPrimary,
+                containerColor = containerColor,
                 contentColor = Color.White
             ),
             interactionSource = interactionSource,
@@ -118,6 +120,7 @@ fun HintBox(text: String) {
 @Composable
 fun ItemUpdate(
     text: String,
+    globalSelectedColor: Color = BlueRayPrimary,
     onConvert: (String) -> Unit,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
@@ -164,6 +167,7 @@ fun ItemUpdate(
             ActionButton(
                 "G",
                 "Global conversion. Apply conversion rule for all entries of this type.",
+                containerColor = globalSelectedColor,
                 onClick = { onGlobalConvert(value) }
             )
             Spacer(Modifier.width(2.dp))
@@ -217,7 +221,13 @@ fun PreviewItemUpdate() {
     MaterialTheme {
         Surface() {
             Box(Modifier.fillMaxWidth()) {
-                ItemUpdate("Initial value here", { "convert" }, { "undow" }, {}, { "Global" })
+                ItemUpdate(
+                    "Initial value here",
+                    BlueRayPrimary,
+                    { "convert" },
+                    { "undow" },
+                    {},
+                    { "Global" })
             }
 
         }

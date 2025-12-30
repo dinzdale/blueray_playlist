@@ -43,7 +43,9 @@ import com.gmjproductions.blurayplaylist.models.Item
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItem
 import com.gmjproductions.blurayplaylist.models.MultiAVCHDItemsIDs
 import com.gmjproductions.blurayplaylist.theme.BlueRayBackground
+import com.gmjproductions.blurayplaylist.theme.BlueRayPrimary
 import com.gmjproductions.blurayplaylist.theme.BlueRaySecondary
+import com.gmjproductions.blurayplaylist.theme.BlueRaySelected
 import com.gmjproductions.blurayplaylist.ui.ActionButton
 import com.gmjproductions.blurayplaylist.ui.ItemUpdate
 import com.gmjproductions.blurayplaylist.ui.resolutionSelections
@@ -261,7 +263,7 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
                 "Save",
                 "Save updated project file",
                 filePath?.isNotBlank() ?: false,
-                onSaveFile
+                onClick = onSaveFile
             )
         }
     }
@@ -277,42 +279,55 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
         }
     }
 
+    var globalContainerColor = remember { mutableStateListOf(BlueRayPrimary,BlueRayPrimary) }
+
 
     LazyColumn(state = lazyListState, userScrollEnabled = true) {
 
         itemsIndexed(theList) { index, item ->
 
-            ItemUpdate(theList[index][MultiAVCHDItemsIDs.NAME]!!.value, onConvert = {
-                theList[index][MultiAVCHDItemsIDs.NAME] =
-                    item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
-            }, onUnDo = {
-                theList[index][MultiAVCHDItemsIDs.NAME]?.value.toString()
-            }, onSave = {
-                onSave(theList)
-            }, onGlobalConvert = {
-                theList.forEachIndexed { index, nxtItem ->
-                    nxtItem[MultiAVCHDItemsIDs.NAME]?.also {
-                        theList[index][MultiAVCHDItemsIDs.NAME] =
-                            it.copy(value = convertFilename(it.value))
+            ItemUpdate(
+                text = theList[index][MultiAVCHDItemsIDs.NAME]!!.value,
+                globalContainerColor[0],
+                onConvert = {
+                    theList[index][MultiAVCHDItemsIDs.NAME] =
+                        item[MultiAVCHDItemsIDs.NAME]!!.copy(value = convertFilename(it))
+                },
+                onUnDo = {
+                    theList[index][MultiAVCHDItemsIDs.NAME]?.value.toString()
+                },
+                onSave = {
+                    onSave(theList)
+                },
+                onGlobalConvert = {
+                    globalContainerColor[0] = BlueRaySelected
+                    theList.forEachIndexed { index, nxtItem ->
+                        nxtItem[MultiAVCHDItemsIDs.NAME]?.also {
+                            theList[index][MultiAVCHDItemsIDs.NAME] =
+                                it.copy(value = convertFilename(it.value))
+                        }
                     }
-                }
-            })
-            ItemUpdate(theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value, onConvert = {
-                theList[index][MultiAVCHDItemsIDs.UNCROP] =
-                    item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncropResolutions.value.value)
-            }, onUnDo = {
-                theList[index][MultiAVCHDItemsIDs.UNCROP]?.value.toString()
-            }, onSave = {
-                theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
-                onSave(theList)
-            }, onGlobalConvert = {
-                theList.forEachIndexed { index, nxtItem ->
-                    nxtItem[MultiAVCHDItemsIDs.UNCROP]?.also {
-                        theList[index][MultiAVCHDItemsIDs.UNCROP] =
-                            it.copy(value = uncropResolutions.value.value)
+                })
+            ItemUpdate(
+                theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value,
+                globalSelectedColor = globalContainerColor[1],
+                onConvert = {
+                    theList[index][MultiAVCHDItemsIDs.UNCROP] =
+                        item[MultiAVCHDItemsIDs.UNCROP]!!.copy(value = uncropResolutions.value.value)
+                }, onUnDo = {
+                    theList[index][MultiAVCHDItemsIDs.UNCROP]?.value.toString()
+                }, onSave = {
+                    theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
+                    onSave(theList)
+                }, onGlobalConvert = {
+                    globalContainerColor[1] = BlueRaySelected
+                    theList.forEachIndexed { index, nxtItem ->
+                        nxtItem[MultiAVCHDItemsIDs.UNCROP]?.also {
+                            theList[index][MultiAVCHDItemsIDs.UNCROP] =
+                                it.copy(value = uncropResolutions.value.value)
+                        }
                     }
-                }
-            })
+                })
         }
 
     }
