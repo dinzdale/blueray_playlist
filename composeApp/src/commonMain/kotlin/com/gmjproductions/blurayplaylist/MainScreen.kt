@@ -225,6 +225,8 @@ fun parseFileContents(contents: String): ParsedResults {
 fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Unit) {
 
 
+    var saveSelectedContainerColor by remember { mutableStateOf(BlueRayPrimary) }
+
     Column(
         Modifier.fillMaxWidth().wrapContentHeight().background(color = BlueRayBackground)
             .height(150.dp),
@@ -257,7 +259,11 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
                 "Save",
                 "Save updated project file",
                 filePath?.isNotBlank() ?: false,
-                onClick = onSaveFile
+                containerColor = saveSelectedContainerColor,
+                onClick = {
+                    onSaveFile()
+                    saveSelectedContainerColor = BlueRaySelected
+                }
             )
         }
     }
@@ -273,8 +279,9 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
         }
     }
 
-    var globalConvertContainerColor = remember { mutableStateListOf(BlueRayPrimary,BlueRayPrimary) }
-    var globalSaveContainerColor = remember { mutableStateListOf(BlueRayPrimary,BlueRayPrimary) }
+    var globalConvertContainerColor =
+        remember { mutableStateListOf(BlueRayPrimary, BlueRayPrimary) }
+    var globalSaveContainerColor = remember { mutableStateListOf(BlueRayPrimary, BlueRayPrimary) }
 
 
 
