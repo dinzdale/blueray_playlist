@@ -124,6 +124,7 @@ fun MainScreen() {
             }
             LaunchedEffect(showFilePicker) {
                 if (showFilePicker) {
+                    contents = null
                     val file = FileKit.openFilePicker()
                     file?.also {
                         inputFile = it
