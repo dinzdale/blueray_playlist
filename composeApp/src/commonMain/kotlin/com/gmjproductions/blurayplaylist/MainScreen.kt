@@ -244,8 +244,9 @@ fun Header(filePath: String?, onOpenFileClick: () -> Unit, onSaveFile: () -> Uni
             horizontalArrangement = Arrangement.Start
         ) {
             ActionButton(
-                "Open File", "Open MultiAVCHD project file to modify", onClick = {onOpenFileClick
-                saveSelectedContainerColor = BlueRayPrimary
+                "Open File", "Open MultiAVCHD project file to modify", onClick = {
+                    onOpenFileClick()
+                    saveSelectedContainerColor = BlueRayPrimary
                 }
             )
             Spacer(Modifier.width(10.dp))
