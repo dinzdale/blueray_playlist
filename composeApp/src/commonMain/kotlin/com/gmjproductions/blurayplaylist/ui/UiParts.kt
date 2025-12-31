@@ -120,13 +120,19 @@ fun ItemUpdate(
     onConvert: (String) -> Unit,
     onUnDo: (String) -> String,
     onSave: (String) -> Unit,
-    onGlobalConvert: (String) -> Unit
+    onGlobalConvert: (String) -> Unit,
+    onUserEntryUpdate: ((String) -> Unit)? = null
 ) {
 
     var value by remember { mutableStateOf(text) }
 
     LaunchedEffect(text) {
         value = text
+    }
+    LaunchedEffect(value) {
+        if (value != text) {
+            onUserEntryUpdate?.invoke(value)
+        }
     }
 
     Row(
