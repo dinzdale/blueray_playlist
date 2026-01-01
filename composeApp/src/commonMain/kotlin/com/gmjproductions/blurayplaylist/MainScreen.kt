@@ -328,7 +328,6 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                     }
                 }, onUserEntryUpdate = {
                     globalSaveContainerColor[index][0] = BlueRayPrimary
-                    theList[index][MultiAVCHDItemsIDs.NAME]?.value = it
                 })
             ItemUpdate(
                 theList[index][MultiAVCHDItemsIDs.UNCROP]!!.value,
@@ -353,7 +352,6 @@ fun ShowResults(calcit: CALCIT, onSave: (List<Map<MultiAVCHDItemsIDs, MultiAVCHD
                     }
                 }, onUserEntryUpdate = {
                     globalSaveContainerColor[index][1] = BlueRayPrimary
-                    theList[index][MultiAVCHDItemsIDs.UNCROP]?.value = it
                 })
         }
 
